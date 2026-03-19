@@ -1,7 +1,7 @@
 extern crate cmake;
 
 use cmake::Config;
-use std::{env, path::PathBuf, process::Command};
+use std::{env, fs, path::PathBuf, process::Command};
 
 /// Find the clang runtime library path dynamically using xcrun
 fn find_clang_rt_path() -> Option<String> {
@@ -44,6 +44,26 @@ fn find_clang_rt_path() -> Option<String> {
     None
 }
 
+/// Determine a stable directory for the MLX metallib that survives `cargo install`
+/// temp dir cleanup. Uses `~/.mlx/lib/` versioned by the mlx-sys crate version.
+///
+/// When `cargo install` builds a crate, it uses a temporary directory that is
+/// deleted after the binary is copied. The CMake build bakes the metallib path
+/// into the binary via `-DMETAL_PATH=...`. If that path points to the temp dir,
+/// the binary fails at runtime with "Failed to load the default metallib".
+///
+/// By setting MLX_METAL_PATH to a stable home-directory location and copying the
+/// metallib there after build, the compiled-in path remains valid.
+#[cfg(feature = "metal")]
+fn stable_metallib_dir() -> PathBuf {
+    let version = env!("CARGO_PKG_VERSION");
+    let home = env::var("HOME").unwrap_or_else(|_| "/tmp".to_string());
+    PathBuf::from(home)
+        .join(".mlx")
+        .join("lib")
+        .join(format!("v{}", version))
+}
+
 fn build_and_link_mlx_c() {
     let mut config = Config::new("src/mlx-c");
     config.very_verbose(true);
@@ -69,6 +89,11 @@ fn build_and_link_mlx_c() {
     #[cfg(feature = "metal")]
     {
         config.define("MLX_BUILD_METAL", "ON");
+
+        // Point MLX_METAL_PATH to a stable location so the compiled-in
+        // METAL_PATH survives `cargo install` temp dir cleanup.
+        let metallib_dir = stable_metallib_dir();
+        config.define("MLX_METAL_PATH", metallib_dir.to_str().unwrap());
     }
 
     #[cfg(feature = "accelerate")]
@@ -90,6 +115,48 @@ fn build_and_link_mlx_c() {
     #[cfg(feature = "metal")]
     {
         println!("cargo:rustc-link-lib=framework=Metal");
+
+        // Copy the built metallib to the stable location so it exists at runtime.
+        // The CMake build produces it in the build dir; we need it at the path
+        // that was compiled into the binary via METAL_PATH.
+        let metallib_dir = stable_metallib_dir();
+        fs::create_dir_all(&metallib_dir).expect("Failed to create metallib directory");
+
+        let built_metallib =
+            dst.join("build/_deps/mlx-build/mlx/backend/metal/kernels/mlx.metallib");
+        let target_metallib = metallib_dir.join("mlx.metallib");
+
+        if built_metallib.exists() {
+            fs::copy(&built_metallib, &target_metallib).unwrap_or_else(|e| {
+                panic!(
+                    "Failed to copy metallib from {} to {}: {}",
+                    built_metallib.display(),
+                    target_metallib.display(),
+                    e
+                )
+            });
+        } else {
+            // Fallback: search for it under the build dir
+            let alt_metallib = dst.join("build/lib/mlx.metallib");
+            if alt_metallib.exists() {
+                fs::copy(&alt_metallib, &target_metallib).unwrap_or_else(|e| {
+                    panic!(
+                        "Failed to copy metallib from {} to {}: {}",
+                        alt_metallib.display(),
+                        target_metallib.display(),
+                        e
+                    )
+                });
+            } else {
+                eprintln!(
+                    "cargo:warning=Could not find mlx.metallib in build output. \
+                     Expected at {} or {}. \
+                     Runtime Metal operations may fail.",
+                    built_metallib.display(),
+                    alt_metallib.display()
+                );
+            }
+        }
     }
 
     #[cfg(feature = "accelerate")]
