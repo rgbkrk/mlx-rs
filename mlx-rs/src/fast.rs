@@ -6,7 +6,7 @@ use crate::error::Result;
 use crate::utils::guard::Guarded;
 use crate::utils::{IntoOption, VectorArray};
 use crate::{Array, Stream};
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 /// Optimized implementation of `NN.RoPE`.
 #[allow(clippy::too_many_arguments)]
@@ -23,13 +23,13 @@ pub fn rope_device<'a>(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     let base = base.into();
-    let base = mlx_sys::mlx_optional_float {
+    let base = quill_mlx_sys::mlx_optional_float {
         value: base.unwrap_or(0.0),
         has_value: base.is_some(),
     };
     let freqs = freqs.into();
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fast_rope(
+        quill_mlx_sys::mlx_fast_rope(
             res,
             array.as_ref().as_ptr(),
             dimensions,
@@ -39,7 +39,7 @@ pub fn rope_device<'a>(
             offset,
             freqs
                 .map(|a| a.as_ptr())
-                .unwrap_or(mlx_sys::mlx_array_new()),
+                .unwrap_or(quill_mlx_sys::mlx_array_new()),
             stream.as_ref().as_ptr(),
         )
     })
@@ -97,7 +97,7 @@ impl ScaledDotProductAttentionMask<'_> {
                 VectorArray::try_from_iter(masks.iter()).unwrap(),
             ),
             ScaledDotProductAttentionMask::Causal => (CAUSAL_MASK_MODE, unsafe {
-                VectorArray::from_ptr(mlx_sys::mlx_vector_array_new())
+                VectorArray::from_ptr(quill_mlx_sys::mlx_vector_array_new())
             }),
         }
     }
@@ -125,14 +125,14 @@ pub fn scaled_dot_product_attention_device<'a>(
     let (mask_mode, masks) = mask.into_option().map_or_else(
         || {
             (DEFAULT_MASK_MODE, unsafe {
-                VectorArray::from_ptr(mlx_sys::mlx_vector_array_new())
+                VectorArray::from_ptr(quill_mlx_sys::mlx_vector_array_new())
             })
         },
         |m| m.as_mode_and_masks(),
     );
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fast_scaled_dot_product_attention(
+        quill_mlx_sys::mlx_fast_scaled_dot_product_attention(
             res,
             queries.as_ref().as_ptr(),
             keys.as_ref().as_ptr(),
@@ -164,7 +164,7 @@ pub fn rms_norm_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fast_rms_norm(
+        quill_mlx_sys::mlx_fast_rms_norm(
             res,
             x.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -197,16 +197,16 @@ pub fn layer_norm_device<'a>(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fast_layer_norm(
+        quill_mlx_sys::mlx_fast_layer_norm(
             res,
             x.as_ref().as_ptr(),
             weight
                 .into()
                 .map(|a| a.as_ptr())
-                .unwrap_or(mlx_sys::mlx_array_new()),
+                .unwrap_or(quill_mlx_sys::mlx_array_new()),
             bias.into()
                 .map(|a| a.as_ptr())
-                .unwrap_or(mlx_sys::mlx_array_new()),
+                .unwrap_or(quill_mlx_sys::mlx_array_new()),
             eps,
             stream.as_ref().as_ptr(),
         )

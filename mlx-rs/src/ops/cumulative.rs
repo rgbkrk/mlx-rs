@@ -1,7 +1,7 @@
 use crate::error::Result;
 use crate::utils::guard::Guarded;
 use crate::{Array, Stream};
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 impl Array {
     /// Return the cumulative maximum of the elements along the given axis returning an error if the inputs are invalid.
@@ -15,7 +15,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [[5, 8], [5, 9]] -- cumulative max along the columns
@@ -33,7 +33,7 @@ impl Array {
 
         match axis.into() {
             Some(axis) => Array::try_from_op(|res| unsafe {
-                mlx_sys::mlx_cummax(
+                quill_mlx_sys::mlx_cummax(
                     res,
                     self.as_ptr(),
                     axis,
@@ -46,7 +46,7 @@ impl Array {
                 let shape = &[-1];
                 let flat = self.reshape_device(shape, stream)?;
                 Array::try_from_op(|res| unsafe {
-                    mlx_sys::mlx_cummax(
+                    quill_mlx_sys::mlx_cummax(
                         res,
                         flat.as_ptr(),
                         0,
@@ -70,7 +70,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [[5, 8], [4, 8]] -- cumulative min along the columns
@@ -88,7 +88,7 @@ impl Array {
 
         match axis.into() {
             Some(axis) => Array::try_from_op(|res| unsafe {
-                mlx_sys::mlx_cummin(
+                quill_mlx_sys::mlx_cummin(
                     res,
                     self.as_ptr(),
                     axis,
@@ -101,7 +101,7 @@ impl Array {
                 let shape = &[-1];
                 let flat = self.reshape_device(shape, stream)?;
                 Array::try_from_op(|res| unsafe {
-                    mlx_sys::mlx_cummin(
+                    quill_mlx_sys::mlx_cummin(
                         res,
                         flat.as_ptr(),
                         0,
@@ -125,7 +125,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [[5, 8], [20, 72]] -- cumulative min along the columns
@@ -143,7 +143,7 @@ impl Array {
 
         match axis.into() {
             Some(axis) => Array::try_from_op(|res| unsafe {
-                mlx_sys::mlx_cumprod(
+                quill_mlx_sys::mlx_cumprod(
                     res,
                     self.as_ptr(),
                     axis,
@@ -156,7 +156,7 @@ impl Array {
                 let shape = &[-1];
                 let flat = self.reshape_device(shape, stream)?;
                 Array::try_from_op(|res| unsafe {
-                    mlx_sys::mlx_cumprod(
+                    quill_mlx_sys::mlx_cumprod(
                         res,
                         flat.as_ptr(),
                         0,
@@ -180,7 +180,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [[5, 8], [9, 17]] -- cumulative min along the columns
@@ -198,7 +198,7 @@ impl Array {
 
         match axis.into() {
             Some(axis) => Array::try_from_op(|res| unsafe {
-                mlx_sys::mlx_cumsum(
+                quill_mlx_sys::mlx_cumsum(
                     res,
                     self.as_ptr(),
                     axis,
@@ -211,7 +211,7 @@ impl Array {
                 let shape = &[-1];
                 let flat = self.reshape_device(shape, stream)?;
                 Array::try_from_op(|res| unsafe {
-                    mlx_sys::mlx_cumsum(
+                    quill_mlx_sys::mlx_cumsum(
                         res,
                         flat.as_ptr(),
                         0,

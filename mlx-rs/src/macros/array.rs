@@ -5,7 +5,7 @@
 /// # Examples
 ///
 /// ```rust
-/// use mlx_rs::array;
+/// use quill_mlx::array;
 ///
 /// // Create an empty array
 /// // Note that an empty array defaults to f32 and one dimension

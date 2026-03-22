@@ -11,8 +11,8 @@ use crate::{
     },
     Array, Dtype,
 };
-use mlx_internal_macros::{generate_builder, Buildable, Builder};
-use mlx_macros::ModuleParameters;
+use quill_mlx_internal_macros::{generate_builder, Buildable, Builder};
+use quill_mlx_macros::ModuleParameters;
 
 /// Type alias for [`RotaryPositionalEncoding`].
 pub type Rope = RotaryPositionalEncoding;

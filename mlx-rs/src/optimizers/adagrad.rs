@@ -1,7 +1,7 @@
 use std::{convert::Infallible, rc::Rc};
 
 use crate::{array, ops::square, utils::Updatable, Array};
-use mlx_internal_macros::{generate_builder, Buildable};
+use quill_mlx_internal_macros::{generate_builder, Buildable};
 
 use crate::utils::get_mut_or_insert_with;
 

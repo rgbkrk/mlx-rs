@@ -1,6 +1,6 @@
 //! Implements bindings for the sorting ops.
 
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 use crate::{error::Result, utils::guard::Guarded, Array, Stream};
 
@@ -14,7 +14,7 @@ use crate::{error::Result, utils::guard::Guarded, Array, Stream};
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let axis = 0;
@@ -28,7 +28,7 @@ pub fn sort_axis_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_sort_axis(res, a.as_ref().as_ptr(), axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_sort_axis(res, a.as_ref().as_ptr(), axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -41,7 +41,7 @@ pub fn sort_axis_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let result = sort(&a);
@@ -50,7 +50,7 @@ pub fn sort_axis_device(
 #[default_device]
 pub fn sort_device(a: impl AsRef<Array>, #[optional] stream: impl AsRef<Stream>) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_sort(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_sort(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -64,7 +64,7 @@ pub fn sort_device(a: impl AsRef<Array>, #[optional] stream: impl AsRef<Stream>)
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let axis = 0;
@@ -78,7 +78,7 @@ pub fn argsort_axis_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argsort_axis(res, a.as_ref().as_ptr(), axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_argsort_axis(res, a.as_ref().as_ptr(), axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -92,7 +92,7 @@ pub fn argsort_axis_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let result = argsort(&a);
@@ -104,7 +104,7 @@ pub fn argsort_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argsort(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_argsort(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -124,7 +124,7 @@ pub fn argsort_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let kth = 1;
@@ -140,7 +140,7 @@ pub fn partition_axis_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_partition_axis(
+        quill_mlx_sys::mlx_partition_axis(
             res,
             a.as_ref().as_ptr(),
             kth,
@@ -165,7 +165,7 @@ pub fn partition_axis_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let kth = 1;
@@ -179,7 +179,7 @@ pub fn partition_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_partition(res, a.as_ref().as_ptr(), kth, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_partition(res, a.as_ref().as_ptr(), kth, stream.as_ref().as_ptr())
     })
 }
 
@@ -199,7 +199,7 @@ pub fn partition_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let kth = 1;
@@ -215,7 +215,7 @@ pub fn argpartition_axis_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argpartition_axis(
+        quill_mlx_sys::mlx_argpartition_axis(
             res,
             a.as_ref().as_ptr(),
             kth,
@@ -241,7 +241,7 @@ pub fn argpartition_axis_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, ops::*};
+/// use quill_mlx::{Array, ops::*};
 ///
 /// let a = Array::from_slice(&[3, 2, 1], &[3]);
 /// let kth = 1;
@@ -255,7 +255,7 @@ pub fn argpartition_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argpartition(res, a.as_ref().as_ptr(), kth, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_argpartition(res, a.as_ref().as_ptr(), kth, stream.as_ref().as_ptr())
     })
 }
 

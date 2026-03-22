@@ -13,7 +13,7 @@ pub(crate) struct StructProperty {
     /// Generate builder if None
     pub builder: Option<syn::Path>,
 
-    /// Rename `mlx_rs` if Some(_)
+    /// Rename `quill_mlx` if Some(_)
     pub root: Option<syn::Path>,
 }
 
@@ -25,7 +25,7 @@ pub(crate) fn expand_derive_buildable(input: DeriveInput) -> Result<proc_macro2:
     let builder_ident = syn::Ident::new(&format!("{struct_ident}Builder"), struct_ident.span());
     let root = match struct_prop.root {
         Some(path) => path,
-        None => syn::parse_quote!(::mlx_rs),
+        None => syn::parse_quote!(::quill_mlx),
     };
 
     let struct_builder_ident = match &struct_prop.builder {

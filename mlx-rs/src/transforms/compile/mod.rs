@@ -19,10 +19,10 @@
 //! # Basic usage
 //!
 //! ```rust
-//! use mlx_rs::{Array, array, transforms::compile::compile, error::Exception};
+//! use quill_mlx::{Array, array, transforms::compile::compile, error::Exception};
 //!
 //! let fun = |(x, y): (&Array, &Array)| -> Result<Array, Exception> {
-//!    mlx_rs::exp!(x.negative()?)?.add(y)
+//!    quill_mlx::exp!(x.negative()?)?.add(y)
 //! };
 //!
 //! let x = array!(1.0);
@@ -50,10 +50,10 @@
 //! should typically compile functions that you plan to use more than once.
 //!
 //! ```rust
-//! use mlx_rs::{Array, array, transforms::compile::compile};
+//! use quill_mlx::{Array, array, transforms::compile::compile};
 //!
 //! let fun = |(x, y): (&Array, &Array)| {
-//!    mlx_rs::exp!(x.negative()?)?.add(y)
+//!    quill_mlx::exp!(x.negative()?)?.add(y)
 //! };
 //!
 //! let x = array!(1.0);
@@ -93,13 +93,13 @@
 //! side effects. For example:
 //!
 //! ```rust,ignore
-//! use mlx_rs::{Array, array, transforms::compile::compile};
+//! use quill_mlx::{Array, array, transforms::compile::compile};
 //!
 //! let mut c = array!(0.5);
 //!
 //! let fun = |(x, y): (&Array, &Array)| {
 //!     let z = (x + y) * c;
-//!     mlx_rs::exp!(z)
+//!     quill_mlx::exp!(z)
 //! };
 //!
 //! let mut compiled = compile(fun, None);
@@ -116,12 +116,12 @@
 //! pass the state as an mutable reference.
 //!
 //! ```rust
-//! use mlx_rs::{Array, array, transforms::compile::compile_with_state};
+//! use quill_mlx::{Array, array, transforms::compile::compile_with_state};
 //! let mut state = vec![];
 //!
 //! let fun = |state: &mut Vec<Array>, (x, y): (&Array, &Array)| {
 //!     let z = x + y;
-//!     let result = mlx_rs::exp!(&z);
+//!     let result = quill_mlx::exp!(&z);
 //!     state.push(z);
 //!     result
 //! };
@@ -160,7 +160,7 @@ pub use compile_with_state::*;
 /// Default is enabled.
 pub fn enable_compile() {
     unsafe {
-        mlx_sys::mlx_enable_compile();
+        quill_mlx_sys::mlx_enable_compile();
     }
 }
 
@@ -169,14 +169,14 @@ pub fn enable_compile() {
 /// Default is enabled.
 pub fn disable_compile() {
     unsafe {
-        mlx_sys::mlx_disable_compile();
+        quill_mlx_sys::mlx_disable_compile();
     }
 }
 
 /// Clear the memory cache.
 pub fn clear_cache() {
     unsafe {
-        mlx_sys::mlx_detail_compile_clear_cache();
+        quill_mlx_sys::mlx_detail_compile_clear_cache();
     }
 }
 
@@ -198,7 +198,7 @@ impl<F> Drop for CompiledState<F> {
     fn drop(&mut self) {
         unsafe {
             // remove the compiled structure from the back end
-            mlx_sys::mlx_detail_compile_erase(self.id);
+            quill_mlx_sys::mlx_detail_compile_erase(self.id);
         }
     }
 }
@@ -217,6 +217,6 @@ where
 fn update_by_replace_with_ref_to_new_array(src: &mut Array, new_array: &Array) {
     debug_assert_eq!(src.shape(), new_array.shape());
     unsafe {
-        mlx_sys::mlx_array_set(&mut src.as_ptr() as *mut _, new_array.as_ptr());
+        quill_mlx_sys::mlx_array_set(&mut src.as_ptr() as *mut _, new_array.as_ptr());
     }
 }

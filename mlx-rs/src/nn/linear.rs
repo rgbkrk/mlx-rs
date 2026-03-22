@@ -1,7 +1,7 @@
 use std::iter::once;
 
 use crate::{error::Exception, quantization::Quantizable, Array};
-use mlx_internal_macros::{Buildable, Builder};
+use quill_mlx_internal_macros::{Buildable, Builder};
 
 use crate::{
     macros::ModuleParameters,

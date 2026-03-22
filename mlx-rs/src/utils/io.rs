@@ -9,15 +9,15 @@ use std::ptr::null_mut;
 use super::Guarded;
 
 pub(crate) struct SafeTensors {
-    pub(crate) c_data: mlx_sys::mlx_map_string_to_array,
-    pub(crate) c_metadata: mlx_sys::mlx_map_string_to_string,
+    pub(crate) c_data: quill_mlx_sys::mlx_map_string_to_array,
+    pub(crate) c_metadata: quill_mlx_sys::mlx_map_string_to_string,
 }
 
 impl Drop for SafeTensors {
     fn drop(&mut self) {
         unsafe {
-            mlx_sys::mlx_map_string_to_string_free(self.c_metadata);
-            mlx_sys::mlx_map_string_to_array_free(self.c_data);
+            quill_mlx_sys::mlx_map_string_to_string_free(self.c_metadata);
+            quill_mlx_sys::mlx_map_string_to_array_free(self.c_data);
         }
     }
 }
@@ -41,7 +41,7 @@ impl SafeTensors {
         let filepath = CString::new(path_str)?;
 
         SafeTensors::try_from_op(|(res_0, res_1)| unsafe {
-            mlx_sys::mlx_load_safetensors(res_0, res_1, filepath.as_ptr(), stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_load_safetensors(res_0, res_1, filepath.as_ptr(), stream.as_ref().as_ptr())
         })
         .map_err(Into::into)
     }
@@ -51,12 +51,12 @@ impl SafeTensors {
             .with(|init| init.call_once(crate::error::setup_mlx_error_handler));
         let mut map = HashMap::new();
         unsafe {
-            let iterator = mlx_sys::mlx_map_string_to_array_iterator_new(self.c_data);
+            let iterator = quill_mlx_sys::mlx_map_string_to_array_iterator_new(self.c_data);
 
             loop {
                 let mut key_ptr: *const ::std::os::raw::c_char = null_mut();
-                let mut value = mlx_sys::mlx_array_new();
-                let status = mlx_sys::mlx_map_string_to_array_iterator_next(
+                let mut value = quill_mlx_sys::mlx_array_new();
+                let status = quill_mlx_sys::mlx_map_string_to_array_iterator_next(
                     &mut key_ptr as *mut *const _,
                     &mut value,
                     iterator,
@@ -69,20 +69,20 @@ impl SafeTensors {
                         map.insert(key, array);
                     }
                     1 => {
-                        mlx_sys::mlx_array_free(value);
+                        quill_mlx_sys::mlx_array_free(value);
                         return Err(crate::error::get_and_clear_last_mlx_error()
                             .expect("A non-success status was returned, but no error was set.")
                             .into());
                     }
                     2 => {
-                        mlx_sys::mlx_array_free(value);
+                        quill_mlx_sys::mlx_array_free(value);
                         break;
                     }
                     _ => unreachable!(),
                 }
             }
 
-            mlx_sys::mlx_map_string_to_array_iterator_free(iterator);
+            quill_mlx_sys::mlx_map_string_to_array_iterator_free(iterator);
         }
 
         Ok(map)
@@ -94,12 +94,12 @@ impl SafeTensors {
 
         let mut map = HashMap::new();
         unsafe {
-            let iterator = mlx_sys::mlx_map_string_to_string_iterator_new(self.c_metadata);
+            let iterator = quill_mlx_sys::mlx_map_string_to_string_iterator_new(self.c_metadata);
 
             let mut key: *const ::std::os::raw::c_char = null_mut();
             let mut value: *const ::std::os::raw::c_char = null_mut();
             loop {
-                let status = mlx_sys::mlx_map_string_to_string_iterator_next(
+                let status = quill_mlx_sys::mlx_map_string_to_string_iterator_next(
                     &mut key as *mut *const _,
                     &mut value as *mut *const _,
                     iterator,

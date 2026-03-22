@@ -2,7 +2,7 @@ use crate::error::Result;
 use crate::utils::guard::Guarded;
 use crate::utils::IntoOption;
 use crate::{Array, Stream};
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 /// General convolution over an input with several channels returning an error if the inputs are invalid.
 ///
@@ -43,7 +43,7 @@ pub fn conv_general_device<'a>(
     let flip = flip.into().unwrap_or(false);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv_general(
+        quill_mlx_sys::mlx_conv_general(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -93,7 +93,7 @@ pub fn conv1d_device(
     let groups = groups.into().unwrap_or(1);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv1d(
+        quill_mlx_sys::mlx_conv1d(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -135,7 +135,7 @@ pub fn conv2d_device(
     let groups = groups.into().unwrap_or(1);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv2d(
+        quill_mlx_sys::mlx_conv2d(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -171,7 +171,7 @@ pub fn conv3d_device(
     let groups = groups.into().unwrap_or(1);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv3d(
+        quill_mlx_sys::mlx_conv3d(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -223,7 +223,7 @@ pub fn conv_transpose1d_device(
     let groups = groups.into().unwrap_or(1);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv_transpose1d(
+        quill_mlx_sys::mlx_conv_transpose1d(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -271,7 +271,7 @@ pub fn conv_transpose2d_device(
     let groups = groups.into().unwrap_or(1);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv_transpose2d(
+        quill_mlx_sys::mlx_conv_transpose2d(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),
@@ -323,7 +323,7 @@ pub fn conv_transpose3d_device(
     let groups = groups.into().unwrap_or(1);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_conv_transpose3d(
+        quill_mlx_sys::mlx_conv_transpose3d(
             res,
             array.as_ref().as_ptr(),
             weight.as_ref().as_ptr(),

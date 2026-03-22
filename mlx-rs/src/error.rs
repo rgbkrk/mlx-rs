@@ -246,7 +246,7 @@ pub(crate) fn setup_mlx_error_handler() {
     let data_ptr = LAST_MLX_ERROR.with(|last_error| last_error.as_ptr() as *mut std::ffi::c_void);
     let dtor = noop_mlx_error_handler_data_deleter;
     unsafe {
-        mlx_sys::mlx_set_error_handler(Some(handler), data_ptr, Some(dtor));
+        quill_mlx_sys::mlx_set_error_handler(Some(handler), data_ptr, Some(dtor));
     }
 }
 

@@ -8,13 +8,13 @@ mod util;
 
 /// Derive the `ModuleParameters` trait for a struct. Mark a field with
 /// `#[param]` attribute to include it in the parameters. The field type must
-/// implement the `mlx_rs::module::Parameter` trait.
+/// implement the `quill_mlx::module::Parameter` trait.
 ///
 /// # Example
 ///
 /// ```rust, ignore
-/// use mlx_macros::ModuleParameters;
-/// use mlx_rs::module::{ModuleParameters, Param};
+/// use quill_mlx_macros::ModuleParameters;
+/// use quill_mlx::module::{ModuleParameters, Param};
 ///
 /// #[derive(ModuleParameters)]
 /// struct Example {

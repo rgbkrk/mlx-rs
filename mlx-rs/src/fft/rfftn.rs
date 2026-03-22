@@ -1,4 +1,4 @@
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 use crate::{
     error::Result,
@@ -30,7 +30,7 @@ pub fn rfft_device(
     let a = a.as_ref();
     let (n, axis) = resolve_size_and_axis_unchecked(a, n.into(), axis.into());
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_rfft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_fft_rfft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -65,7 +65,7 @@ pub fn rfft2_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_rfft2(
+        quill_mlx_sys::mlx_fft_rfft2(
             res,
             a.as_ptr(),
             s_ptr,
@@ -108,7 +108,7 @@ pub fn rfftn_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_rfftn(
+        quill_mlx_sys::mlx_fft_rfftn(
             res,
             a.as_ptr(),
             s_ptr,
@@ -148,7 +148,7 @@ pub fn irfft_device(
     }
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_irfft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_fft_irfft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -191,7 +191,7 @@ pub fn irfft2_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_irfft2(
+        quill_mlx_sys::mlx_fft_irfft2(
             res,
             a.as_ptr(),
             s_ptr,
@@ -243,7 +243,7 @@ pub fn irfftn_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_irfftn(
+        quill_mlx_sys::mlx_fft_irfftn(
             res,
             a.as_ptr(),
             s_ptr,

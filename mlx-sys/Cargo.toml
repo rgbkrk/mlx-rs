@@ -1,10 +1,10 @@
 [package]
-name = "mlx-sys"
-version = "0.2.0" # mlx-sys version should follow that of mlx-c
+name = "quill-mlx-sys"
+version = "0.2.2"
 authors.workspace = true
 edition.workspace = true
 
-description = "Low-level interface and binding generation for the mlx library"
+description = "Low-level FFI bindings for Apple's MLX machine learning framework"
 repository.workspace = true
 keywords.workspace = true
 categories.workspace = true

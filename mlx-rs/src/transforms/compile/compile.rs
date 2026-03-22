@@ -331,7 +331,7 @@ fn call_mut_inner(
     // but will be able to re-evaluate with fresh state if needed
     let compiled = Closure::try_from_op(|res| unsafe {
         let constants = &[];
-        mlx_sys::mlx_detail_compile(
+        quill_mlx_sys::mlx_detail_compile(
             res,
             inner_closure.as_ptr(),
             fun_id,
@@ -346,7 +346,7 @@ fn call_mut_inner(
     // will compile the function (if needed) and evaluate the
     // compiled graph
     let result_vector = VectorArray::try_from_op(|res| unsafe {
-        mlx_sys::mlx_closure_apply(res, compiled.as_ptr(), inner_inputs_vector.as_ptr())
+        quill_mlx_sys::mlx_closure_apply(res, compiled.as_ptr(), inner_inputs_vector.as_ptr())
     })?;
     let result_plus_state_output: Vec<Array> = result_vector.try_into_values()?;
 

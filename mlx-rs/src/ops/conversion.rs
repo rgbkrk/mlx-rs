@@ -1,4 +1,4 @@
-use mlx_internal_macros::default_device;
+use quill_mlx_internal_macros::default_device;
 
 use crate::{error::Result, utils::guard::Guarded, Array, ArrayElement, Dtype, Stream};
 
@@ -8,7 +8,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, Dtype};
+    /// use quill_mlx::{Array, Dtype};
     ///
     /// let array = Array::from_slice(&[1i16,2,3], &[3]);
     /// let mut new_array = array.as_type::<f32>().unwrap();
@@ -27,7 +27,7 @@ impl Array {
     #[default_device]
     pub fn as_dtype_device(&self, dtype: Dtype, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_astype(res, self.as_ptr(), dtype.into(), stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_astype(res, self.as_ptr(), dtype.into(), stream.as_ref().as_ptr())
         })
     }
 
@@ -49,7 +49,7 @@ impl Array {
     #[default_device]
     pub fn view_dtype_device(&self, dtype: Dtype, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_view(res, self.as_ptr(), dtype.into(), stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_view(res, self.as_ptr(), dtype.into(), stream.as_ref().as_ptr())
         })
     }
 }

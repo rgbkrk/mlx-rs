@@ -1,7 +1,7 @@
 use std::{borrow::Cow, rc::Rc};
 
 use crate::{array, utils::get_mut_or_insert_with, Array};
-use mlx_internal_macros::{generate_builder, Buildable};
+use quill_mlx_internal_macros::{generate_builder, Buildable};
 
 use super::*;
 

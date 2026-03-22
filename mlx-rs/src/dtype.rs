@@ -1,5 +1,5 @@
 use half::{bf16, f16};
-use mlx_internal_macros::generate_test_cases;
+use quill_mlx_internal_macros::generate_test_cases;
 use strum::EnumIter;
 
 use crate::error::InexactDtypeError;
@@ -20,46 +20,46 @@ generate_test_cases! {
     #[repr(u32)]
     pub enum Dtype {
         /// bool
-        Bool = mlx_sys::mlx_dtype__MLX_BOOL,
+        Bool = quill_mlx_sys::mlx_dtype__MLX_BOOL,
 
         /// u8
-        Uint8 = mlx_sys::mlx_dtype__MLX_UINT8,
+        Uint8 = quill_mlx_sys::mlx_dtype__MLX_UINT8,
 
         /// u16
-        Uint16 = mlx_sys::mlx_dtype__MLX_UINT16,
+        Uint16 = quill_mlx_sys::mlx_dtype__MLX_UINT16,
 
         /// u32
-        Uint32 = mlx_sys::mlx_dtype__MLX_UINT32,
+        Uint32 = quill_mlx_sys::mlx_dtype__MLX_UINT32,
 
         /// u64
-        Uint64 = mlx_sys::mlx_dtype__MLX_UINT64,
+        Uint64 = quill_mlx_sys::mlx_dtype__MLX_UINT64,
 
         /// i8
-        Int8 = mlx_sys::mlx_dtype__MLX_INT8,
+        Int8 = quill_mlx_sys::mlx_dtype__MLX_INT8,
 
         /// i16
-        Int16 = mlx_sys::mlx_dtype__MLX_INT16,
+        Int16 = quill_mlx_sys::mlx_dtype__MLX_INT16,
 
         /// i32
-        Int32 = mlx_sys::mlx_dtype__MLX_INT32,
+        Int32 = quill_mlx_sys::mlx_dtype__MLX_INT32,
 
         /// i64
-        Int64 = mlx_sys::mlx_dtype__MLX_INT64,
+        Int64 = quill_mlx_sys::mlx_dtype__MLX_INT64,
 
         /// f16
-        Float16 = mlx_sys::mlx_dtype__MLX_FLOAT16,
+        Float16 = quill_mlx_sys::mlx_dtype__MLX_FLOAT16,
 
         /// f32
-        Float32 = mlx_sys::mlx_dtype__MLX_FLOAT32,
+        Float32 = quill_mlx_sys::mlx_dtype__MLX_FLOAT32,
 
         /// f64
-        Float64 = mlx_sys::mlx_dtype__MLX_FLOAT64,
+        Float64 = quill_mlx_sys::mlx_dtype__MLX_FLOAT64,
 
         /// bfloat16
-        Bfloat16 = mlx_sys::mlx_dtype__MLX_BFLOAT16,
+        Bfloat16 = quill_mlx_sys::mlx_dtype__MLX_BFLOAT16,
 
         /// complex64
-        Complex64 = mlx_sys::mlx_dtype__MLX_COMPLEX64,
+        Complex64 = quill_mlx_sys::mlx_dtype__MLX_COMPLEX64,
     }
 }
 

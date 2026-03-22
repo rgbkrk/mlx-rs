@@ -1,8 +1,8 @@
 use crate::module::Module;
 use crate::Array;
 use crate::{array, error::Exception, ops::multiply, random::bernoulli};
-use mlx_internal_macros::{Buildable, Builder};
-use mlx_macros::ModuleParameters;
+use quill_mlx_internal_macros::{Buildable, Builder};
+use quill_mlx_macros::ModuleParameters;
 
 use crate::error::DropoutBuildError;
 

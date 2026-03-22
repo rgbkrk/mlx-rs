@@ -13,7 +13,7 @@ fn build_gradient_inner<'a>(
 ) -> impl FnMut(&[Array]) -> Result<Vec<Array>> + 'a {
     move |arrays: &[Array]| -> Result<Vec<Array>> {
         let cvg = ClosureValueAndGrad::try_from_op(|res| unsafe {
-            mlx_sys::mlx_value_and_grad(res, closure.as_ptr(), argnums.as_ptr(), argnums.len())
+            quill_mlx_sys::mlx_value_and_grad(res, closure.as_ptr(), argnums.as_ptr(), argnums.len())
         })?;
         let result = value_and_gradient(cvg.as_ptr(), arrays.iter())?;
         Ok(result.1)

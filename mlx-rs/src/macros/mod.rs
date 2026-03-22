@@ -6,4 +6,4 @@ mod internal;
 mod array;
 mod assert;
 
-pub use mlx_macros::*;
+pub use quill_mlx_macros::*;

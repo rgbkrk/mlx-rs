@@ -45,7 +45,7 @@
 //! ```rust
 //! // See the multi-dimensional example code for mlx python https://ml-explore.github.io/mlx/build/html/usage/indexing.html
 //!
-//! use mlx_rs::{Array, ops::indexing::*};
+//! use quill_mlx::{Array, ops::indexing::*};
 //!
 //! let a = Array::from_iter(0..8, &[2, 2, 2]);
 //!
@@ -70,7 +70,7 @@
 //! ## Example
 //!
 //! ```rust
-//! use mlx_rs::{Array, ops::indexing::*};
+//! use quill_mlx::{Array, ops::indexing::*};
 //!
 //! let mut a = Array::from_slice(&[1, 2, 3], &[3]);
 //! a.index_mut(2, Array::from_int(0));
@@ -80,7 +80,7 @@
 //! ```
 //!
 //! ```rust
-//! use mlx_rs::{Array, ops::indexing::*};
+//! use quill_mlx::{Array, ops::indexing::*};
 //!
 //! let mut a = Array::from_iter(0i32..20, &[2, 2, 5]);
 //!
@@ -98,7 +98,7 @@
 
 use std::{borrow::Cow, ops::Bound, rc::Rc};
 
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 use crate::{error::Result, utils::guard::Guarded, Array, Stream, StreamOrDevice};
 
@@ -390,7 +390,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_take_axis(
+            quill_mlx_sys::mlx_take_axis(
                 res,
                 self.as_ptr(),
                 indices.as_ref().as_ptr(),
@@ -412,7 +412,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_take(
+            quill_mlx_sys::mlx_take(
                 res,
                 self.as_ptr(),
                 indices.as_ref().as_ptr(),
@@ -442,7 +442,7 @@ impl Array {
         };
 
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_take_along_axis(
+            quill_mlx_sys::mlx_take_along_axis(
                 res,
                 input.as_ptr(),
                 indices.as_ref().as_ptr(),
@@ -473,7 +473,7 @@ impl Array {
             None => {
                 let input = self.reshape_device(&[-1], &stream)?;
                 let array = Array::try_from_op(|res| unsafe {
-                    mlx_sys::mlx_put_along_axis(
+                    quill_mlx_sys::mlx_put_along_axis(
                         res,
                         input.as_ptr(),
                         indices.as_ref().as_ptr(),
@@ -486,7 +486,7 @@ impl Array {
                 Ok(array)
             }
             Some(ax) => Array::try_from_op(|res| unsafe {
-                mlx_sys::mlx_put_along_axis(
+                quill_mlx_sys::mlx_put_along_axis(
                     res,
                     self.as_ptr(),
                     indices.as_ref().as_ptr(),
@@ -519,7 +519,7 @@ pub fn argmax_axis_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argmax_axis(
+        quill_mlx_sys::mlx_argmax_axis(
             res,
             a.as_ref().as_ptr(),
             axis,
@@ -545,7 +545,7 @@ pub fn argmax_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argmax(
+        quill_mlx_sys::mlx_argmax(
             res,
             a.as_ref().as_ptr(),
             keep_dims,
@@ -574,7 +574,7 @@ pub fn argmin_axis_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argmin_axis(
+        quill_mlx_sys::mlx_argmin_axis(
             res,
             a.as_ref().as_ptr(),
             axis,
@@ -600,7 +600,7 @@ pub fn argmin_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_argmin(
+        quill_mlx_sys::mlx_argmin(
             res,
             a.as_ref().as_ptr(),
             keep_dims,
@@ -678,7 +678,7 @@ pub fn topk_axis_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_topk_axis(res, a.as_ref().as_ptr(), k, axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_topk_axis(res, a.as_ref().as_ptr(), k, axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -691,7 +691,7 @@ pub fn topk_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_topk(res, a.as_ref().as_ptr(), k, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_topk(res, a.as_ref().as_ptr(), k, stream.as_ref().as_ptr())
     })
 }
 

@@ -6,7 +6,7 @@ use crate::module::Param;
 use crate::ops::indexing::IndexOp;
 use crate::quantization::Quantizable;
 use crate::Array;
-use mlx_macros::ModuleParameters;
+use quill_mlx_macros::ModuleParameters;
 
 use super::QuantizedEmbedding;
 

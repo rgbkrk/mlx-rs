@@ -1,19 +1,19 @@
 [workspace.package]
-# All but mlx-sys should follow the same version. mlx-sys should follow
+# All but quill-mlx-sys should follow the same version. quill-mlx-sys should follow
 # the version of mlx-c.
-version = "0.25.3"
+version = "0.25.5"
 edition = "2021"
 authors = [
+    "Kyle Kelley <rgbkrk@gmail.com>",
     "Minghua Wu <michael.wu1107@gmail.com>",
     "David Chavez <david@dcvz.io>",
 ]
 
-repository = "https://github.com/oxideai/mlx-rs"
+repository = "https://github.com/rgbkrk/mlx-rs"
 keywords = ["mlx", "deep-learning", "machine-learning"]
 categories = ["science"]
 license = "MIT OR Apache-2.0"
-documentation = "https://oxideai.github.io/mlx-rs/mlx_rs/"
-rust-version = "1.82.0"
+rust-version = "1.85.0"
 
 [workspace]
 members = [
@@ -21,22 +21,16 @@ members = [
     "mlx-sys",
     "mlx-rs",
     "mlx-internal-macros",
-    "mlx-lm",
-    "mlx-lm-utils", 
-    "mlx-tests",
-    "examples/*", 
 ]
 
 resolver = "2"
 
 [workspace.dependencies]
 # workspace local dependencies
-mlx-sys = { version = "=0.2.0", path = "mlx-sys" }
-mlx-macros = { version = "0.25", path = "mlx-macros" }
-mlx-internal-macros = { version = "0.25", path = "mlx-internal-macros" }
-mlx-rs = { version = "0.25", path = "mlx-rs" }
-mlx-lm = { version = "0.0.1", path = "mlx-lm" }
-mlx-lm-utils = { version = "0.0.1", path = "mlx-lm-utils" }
+quill-mlx-sys = { version = "=0.2.2", path = "mlx-sys" }
+quill-mlx-macros = { version = "0.25", path = "mlx-macros" }
+quill-mlx-internal-macros = { version = "0.25", path = "mlx-internal-macros" }
+quill-mlx = { version = "0.25", path = "mlx-rs" }
 
 # external dependencies
 thiserror = "2"

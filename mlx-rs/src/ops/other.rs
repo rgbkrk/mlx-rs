@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 use crate::utils::guard::Guarded;
 use crate::utils::VectorArray;
@@ -26,7 +26,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_diag(
+            quill_mlx_sys::mlx_diag(
                 res,
                 self.as_ptr(),
                 k.into().unwrap_or(0),
@@ -58,7 +58,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_diagonal(
+            quill_mlx_sys::mlx_diagonal(
                 res,
                 self.as_ptr(),
                 offset.into().unwrap_or(0),
@@ -84,13 +84,13 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         let scale = scale.into();
-        let scale = mlx_sys::mlx_optional_float {
+        let scale = quill_mlx_sys::mlx_optional_float {
             value: scale.unwrap_or(0.0),
             has_value: scale.is_some(),
         };
 
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_hadamard_transform(res, self.as_ptr(), scale, stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_hadamard_transform(res, self.as_ptr(), scale, stream.as_ref().as_ptr())
         })
     }
 }
@@ -138,7 +138,7 @@ pub fn einsum_device<'a>(
     let c_operands = VectorArray::try_from_iter(operands.into_iter())?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_einsum(
+        quill_mlx_sys::mlx_einsum(
             res,
             c_subscripts.as_ptr(),
             c_operands.as_ptr(),
@@ -162,7 +162,7 @@ pub fn kron_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_kron(
+        quill_mlx_sys::mlx_kron(
             res,
             a.as_ref().as_ptr(),
             b.as_ref().as_ptr(),

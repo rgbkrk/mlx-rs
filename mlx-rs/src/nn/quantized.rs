@@ -10,8 +10,8 @@ use crate::{
     random::uniform,
     Array,
 };
-use mlx_internal_macros::{Buildable, Builder};
-use mlx_macros::ModuleParameters;
+use quill_mlx_internal_macros::{Buildable, Builder};
+use quill_mlx_macros::ModuleParameters;
 
 use crate::nn::{Embedding, Linear};
 

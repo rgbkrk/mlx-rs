@@ -1,6 +1,6 @@
 use std::convert::Infallible;
 
-use mlx_internal_macros::{generate_builder, Buildable};
+use quill_mlx_internal_macros::{generate_builder, Buildable};
 
 use crate::{
     array,

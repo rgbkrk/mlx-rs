@@ -9,7 +9,7 @@ use crate::{
     },
     Array,
 };
-use mlx_internal_macros::{generate_builder, Buildable};
+use quill_mlx_internal_macros::{generate_builder, Buildable};
 
 #[inline]
 fn check_shape(

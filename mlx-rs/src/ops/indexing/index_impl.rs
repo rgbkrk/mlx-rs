@@ -711,7 +711,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_slice(
+            quill_mlx_sys::mlx_slice(
                 res,
                 self.as_ptr(),
                 start.as_ptr(),
@@ -869,7 +869,7 @@ fn gather_nd<'a>(
     let indices = VectorArray::try_from_iter(gather_indices.iter())?;
 
     let gathered = Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_gather(
+        quill_mlx_sys::mlx_gather(
             res,
             src.as_ptr(),
             indices.as_ptr(),

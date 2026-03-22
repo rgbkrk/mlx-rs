@@ -3,7 +3,7 @@ use crate::error::Result;
 use crate::utils::axes_or_default_to_all;
 use crate::utils::guard::Guarded;
 use crate::Stream;
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 impl Array {
     /// An `and` reduction over the given axes returning an error if the axes are invalid.
@@ -16,7 +16,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], &[3, 4]);
     /// let mut b = a.all_axes(&[0], None).unwrap();
     ///
@@ -31,7 +31,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_all_axes(
+            quill_mlx_sys::mlx_all_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -51,7 +51,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_all_axis(
+            quill_mlx_sys::mlx_all_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -69,7 +69,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_all(
+            quill_mlx_sys::mlx_all(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -88,7 +88,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [20, 72]
@@ -102,7 +102,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_prod_axes(
+            quill_mlx_sys::mlx_prod_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -122,7 +122,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_prod_axis(
+            quill_mlx_sys::mlx_prod_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -140,7 +140,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_prod(
+            quill_mlx_sys::mlx_prod(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -159,7 +159,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [5, 9]
@@ -173,7 +173,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_max_axes(
+            quill_mlx_sys::mlx_max_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -193,7 +193,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_max_axis(
+            quill_mlx_sys::mlx_max_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -211,7 +211,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_max(
+            quill_mlx_sys::mlx_max(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -230,7 +230,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [9, 17]
@@ -244,7 +244,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_sum_axes(
+            quill_mlx_sys::mlx_sum_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -264,7 +264,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_sum_axis(
+            quill_mlx_sys::mlx_sum_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -282,7 +282,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_sum(
+            quill_mlx_sys::mlx_sum(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -301,7 +301,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [4.5, 8.5]
@@ -316,7 +316,7 @@ impl Array {
     ) -> Result<Array> {
         let axes = axes_or_default_to_all(axes, self.ndim() as i32);
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_mean_axes(
+            quill_mlx_sys::mlx_mean_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -336,7 +336,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_mean_axis(
+            quill_mlx_sys::mlx_mean_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -354,7 +354,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_mean(
+            quill_mlx_sys::mlx_mean(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -373,7 +373,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let array = Array::from_slice(&[5, 8, 4, 9], &[2, 2]);
     ///
     /// // result is [4, 8]
@@ -387,7 +387,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_min_axes(
+            quill_mlx_sys::mlx_min_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -407,7 +407,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_min_axis(
+            quill_mlx_sys::mlx_min_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -425,7 +425,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_min(
+            quill_mlx_sys::mlx_min(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -450,7 +450,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_var_axes(
+            quill_mlx_sys::mlx_var_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -472,7 +472,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_var_axis(
+            quill_mlx_sys::mlx_var_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -492,7 +492,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_var(
+            quill_mlx_sys::mlx_var(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -518,7 +518,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_logsumexp_axes(
+            quill_mlx_sys::mlx_logsumexp_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -538,7 +538,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_logsumexp_axis(
+            quill_mlx_sys::mlx_logsumexp_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -556,7 +556,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_logsumexp(
+            quill_mlx_sys::mlx_logsumexp(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -693,7 +693,7 @@ pub fn std_axes_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
     let ddof = ddof.into().unwrap_or(0);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_std_axes(
+        quill_mlx_sys::mlx_std_axes(
             res,
             a.as_ptr(),
             axes.as_ptr(),
@@ -719,7 +719,7 @@ pub fn std_axis_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
     let ddof = ddof.into().unwrap_or(0);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_std_axis(
+        quill_mlx_sys::mlx_std_axis(
             res,
             a.as_ptr(),
             axis,
@@ -743,7 +743,7 @@ pub fn std_device(
     let keep_dims = keep_dims.into().unwrap_or(false);
     let ddof = ddof.into().unwrap_or(0);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_std(res, a.as_ptr(), keep_dims, ddof, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_std(res, a.as_ptr(), keep_dims, ddof, stream.as_ref().as_ptr())
     })
 }
 

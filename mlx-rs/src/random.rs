@@ -5,7 +5,7 @@ use crate::utils::guard::Guarded;
 use crate::utils::IntoOption;
 use crate::{error::Result, Array, ArrayElement, Stream};
 use mach_sys::mach_time;
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 use parking_lot::Mutex;
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -96,7 +96,7 @@ pub fn seed(seed: u64) -> Result<()> {
 /// functions take an optional key -- this will let you control the
 /// random number generation.
 pub fn key(seed: u64) -> Result<Array> {
-    Array::try_from_op(|res| unsafe { mlx_sys::mlx_random_key(res, seed) })
+    Array::try_from_op(|res| unsafe { quill_mlx_sys::mlx_random_key(res, seed) })
 }
 
 /// Split a PRNG key into two keys and return a tuple.
@@ -107,7 +107,7 @@ pub fn split_device(
     stream: impl AsRef<Stream>,
 ) -> Result<(Array, Array)> {
     let keys = Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_split_num(res, key.as_ref().as_ptr(), num, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_random_split_num(res, key.as_ref().as_ptr(), num, stream.as_ref().as_ptr())
     })?;
 
     Ok((keys.try_index(0)?, keys.try_index(1)?))
@@ -125,13 +125,13 @@ pub fn split_device(
 /// - `key` (optional): A PRNG key.
 ///
 /// ```rust
-/// let key = mlx_rs::random::key(0).unwrap();
+/// let key = quill_mlx::random::key(0).unwrap();
 ///
 /// // create an array of shape `[50]` type f32 values in the range [0, 10)
-/// let array = mlx_rs::random::uniform::<_, f32>(0, 10, &[50], &key);
+/// let array = quill_mlx::random::uniform::<_, f32>(0, 10, &[50], &key);
 ///
 /// // same, but in range [0.5, 1)
-/// let array = mlx_rs::random::uniform::<_, f32>(0.5f32, 1f32, &[50], &key);
+/// let array = quill_mlx::random::uniform::<_, f32>(0.5f32, 1f32, &[50], &key);
 /// ```
 #[generate_macro(customize(root = "$crate::random"))]
 #[default_device]
@@ -148,7 +148,7 @@ pub fn uniform_device<'a, E: Into<Array>, T: ArrayElement>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_uniform(
+        quill_mlx_sys::mlx_random_uniform(
             res,
             lb.as_ptr(),
             ub.as_ptr(),
@@ -176,13 +176,13 @@ pub fn uniform_device<'a, E: Into<Array>, T: ArrayElement>(
 /// # Example
 ///
 /// ```rust
-/// let key = mlx_rs::random::key(0).unwrap();
+/// let key = quill_mlx::random::key(0).unwrap();
 ///
 /// // generate a single f32 with normal distribution
-/// let value = mlx_rs::random::normal::<f32>(None, None, None, &key).unwrap().item::<f32>();
+/// let value = quill_mlx::random::normal::<f32>(None, None, None, &key).unwrap().item::<f32>();
 ///
 /// // generate an array of f32 with normal distribution in shape [10, 5]
-/// let array = mlx_rs::random::normal::<f32>(&[10, 5], None, None, &key);
+/// let array = quill_mlx::random::normal::<f32>(&[10, 5], None, None, &key);
 /// ```
 #[generate_macro(customize(root = "$crate::random"))]
 #[default_device]
@@ -197,7 +197,7 @@ pub fn normal_device<'a, T: ArrayElement>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_normal(
+        quill_mlx_sys::mlx_random_normal(
             res,
             shape.as_ptr(),
             shape.len(),
@@ -233,7 +233,7 @@ pub fn multivariate_normal_device<'a, T: ArrayElement>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_multivariate_normal(
+        quill_mlx_sys::mlx_random_multivariate_normal(
             res,
             mean.as_ref().as_ptr(),
             covariance.as_ref().as_ptr(),
@@ -253,7 +253,7 @@ pub fn multivariate_normal_device<'a, T: ArrayElement>(
 /// scalars or arrays and must be roadcastable to `shape`.
 ///
 /// ```rust
-/// use mlx_rs::{array, random};
+/// use quill_mlx::{array, random};
 ///
 /// let key = random::key(0).unwrap();
 ///
@@ -275,7 +275,7 @@ pub fn randint_device<'a, E: Into<Array>, T: ArrayElement>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_randint(
+        quill_mlx_sys::mlx_random_randint(
             res,
             lb.as_ptr(),
             ub.as_ptr(),
@@ -295,7 +295,7 @@ pub fn randint_device<'a, E: Into<Array>, T: ArrayElement>(
 /// must be broadcastable to `shape`.
 ///
 /// ```rust
-/// use mlx_rs::{array, Array, random};
+/// use quill_mlx::{array, Array, random};
 ///
 /// let key = random::key(0).unwrap();
 ///
@@ -324,7 +324,7 @@ pub fn bernoulli_device<'a>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_bernoulli(
+        quill_mlx_sys::mlx_random_bernoulli(
             res,
             p.as_ptr(),
             shape.as_ptr(),
@@ -342,7 +342,7 @@ pub fn bernoulli_device<'a>(
 /// can be scalars or arrays and must be broadcastable to `shape`.
 ///
 /// ```rust
-/// use mlx_rs::{array, random};
+/// use quill_mlx::{array, random};
 ///
 /// let key = random::key(0).unwrap();
 ///
@@ -365,7 +365,7 @@ pub fn truncated_normal_device<'a, E: Into<Array>, T: ArrayElement>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_truncated_normal(
+        quill_mlx_sys::mlx_random_truncated_normal(
             res,
             lb.as_ptr(),
             ub.as_ptr(),
@@ -384,13 +384,13 @@ pub fn truncated_normal_device<'a, E: Into<Array>, T: ArrayElement>(
 /// which CDF `exp(-exp(-x))`.
 ///
 /// ```rust
-/// let key = mlx_rs::random::key(0).unwrap();
+/// let key = quill_mlx::random::key(0).unwrap();
 ///
 /// // generate a single Float with Gumbel distribution
-/// let value = mlx_rs::random::gumbel::<f32>(None, &key).unwrap().item::<f32>();
+/// let value = quill_mlx::random::gumbel::<f32>(None, &key).unwrap().item::<f32>();
 ///
 /// // generate an array of Float with Gumbel distribution in shape [10, 5]
-/// let array = mlx_rs::random::gumbel::<f32>(&[10, 5], &key);
+/// let array = quill_mlx::random::gumbel::<f32>(&[10, 5], &key);
 /// ```
 #[generate_macro(customize(root = "$crate::random"))]
 #[default_device]
@@ -403,7 +403,7 @@ pub fn gumbel_device<'a, T: ArrayElement>(
     let key = resolve(key)?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_random_gumbel(
+        quill_mlx_sys::mlx_random_gumbel(
             res,
             shape.as_ptr(),
             shape.len(),
@@ -444,12 +444,12 @@ pub enum ShapeOrCount<'a> {
 /// # Example
 ///
 /// ```rust
-/// let key = mlx_rs::random::key(0).unwrap();
+/// let key = quill_mlx::random::key(0).unwrap();
 ///
-/// let logits = mlx_rs::Array::zeros::<u32>(&[5, 20]).unwrap();
+/// let logits = quill_mlx::Array::zeros::<u32>(&[5, 20]).unwrap();
 ///
 /// // produces Array of u32 shape &[5]
-/// let result = mlx_rs::random::categorical(&logits, None, None, &key);
+/// let result = quill_mlx::random::categorical(&logits, None, None, &key);
 /// ```
 #[generate_macro(customize(root = "$crate::random"))]
 #[default_device]
@@ -465,7 +465,7 @@ pub fn categorical_device<'a>(
 
     match shape_or_count.into() {
         Some(ShapeOrCount::Shape(shape)) => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_random_categorical_shape(
+            quill_mlx_sys::mlx_random_categorical_shape(
                 res,
                 logits.as_ref().as_ptr(),
                 axis,
@@ -476,7 +476,7 @@ pub fn categorical_device<'a>(
             )
         }),
         Some(ShapeOrCount::Count(num_samples)) => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_random_categorical_num_samples(
+            quill_mlx_sys::mlx_random_categorical_num_samples(
                 res,
                 logits.as_ref().as_ptr(),
                 axis,
@@ -486,7 +486,7 @@ pub fn categorical_device<'a>(
             )
         }),
         None => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_random_categorical(
+            quill_mlx_sys::mlx_random_categorical(
                 res,
                 logits.as_ref().as_ptr(),
                 axis,

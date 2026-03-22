@@ -1,4 +1,4 @@
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 use crate::{error::Result, utils::guard::Guarded, Array, Stream};
 
@@ -31,7 +31,7 @@ pub fn quantize_device(
     let bits = bits.into().unwrap_or(4);
 
     <(Array, Array, Array) as Guarded>::try_from_op(|(res0, res1, res2)| unsafe {
-        mlx_sys::mlx_quantize(
+        quill_mlx_sys::mlx_quantize(
             res0,
             res1,
             res2,
@@ -64,7 +64,7 @@ pub fn quantized_matmul_device(
     let bits = bits.into().unwrap_or(4);
 
     <Array as Guarded>::try_from_op(|res| unsafe {
-        mlx_sys::mlx_quantized_matmul(
+        quill_mlx_sys::mlx_quantized_matmul(
             res,
             x.as_ref().as_ptr(),
             w.as_ref().as_ptr(),
@@ -97,7 +97,7 @@ pub fn dequantize_device(
     let bits = bits.into().unwrap_or(4);
 
     <Array as Guarded>::try_from_op(|res| unsafe {
-        mlx_sys::mlx_dequantize(
+        quill_mlx_sys::mlx_dequantize(
             res,
             w.as_ref().as_ptr(),
             scales.as_ref().as_ptr(),

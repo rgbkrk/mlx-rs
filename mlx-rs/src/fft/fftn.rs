@@ -1,4 +1,4 @@
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 use crate::{
     array::Array,
@@ -28,7 +28,7 @@ pub fn fft_device(
     let a = a.as_ref();
     let (n, axis) = resolve_size_and_axis_unchecked(a, n.into(), axis.into());
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_fft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_fft_fft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -59,7 +59,7 @@ pub fn fft2_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_fft2(
+        quill_mlx_sys::mlx_fft_fft2(
             res,
             a.as_ptr(),
             s_ptr,
@@ -98,7 +98,7 @@ pub fn fftn_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_fftn(
+        quill_mlx_sys::mlx_fft_fftn(
             res,
             a.as_ptr(),
             s_ptr,
@@ -130,7 +130,7 @@ pub fn ifft_device(
     let (n, axis) = resolve_size_and_axis_unchecked(a, n.into(), axis.into());
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_ifft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_fft_ifft(res, a.as_ptr(), n, axis, stream.as_ref().as_ptr())
     })
 }
 
@@ -161,7 +161,7 @@ pub fn ifft2_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_ifft2(
+        quill_mlx_sys::mlx_fft_ifft2(
             res,
             a.as_ptr(),
             s_ptr,
@@ -200,7 +200,7 @@ pub fn ifftn_device<'a>(
     let axes_ptr = axes.as_ptr();
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_fft_ifftn(
+        quill_mlx_sys::mlx_fft_ifftn(
             res,
             a.as_ptr(),
             s_ptr,

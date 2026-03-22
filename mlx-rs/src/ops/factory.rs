@@ -3,7 +3,7 @@ use crate::array::ArrayElement;
 use crate::error::Result;
 use crate::utils::guard::Guarded;
 use crate::{Dtype, Stream};
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 use num_traits::NumCast;
 
 impl Array {
@@ -16,7 +16,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// Array::zeros_device::<f32>(&[5, 10], StreamOrDevice::default()).unwrap();
     /// ```
     #[default_device]
@@ -37,7 +37,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// Array::ones_device::<f32>(&[5, 10], StreamOrDevice::default()).unwrap();
     /// ```
     #[default_device]
@@ -60,7 +60,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// //  create [10, 10] array with 1's on the diagonal.
     /// let r = Array::eye_device::<f32>(10, None, None, StreamOrDevice::default()).unwrap();
     /// ```
@@ -72,7 +72,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_eye(
+            quill_mlx_sys::mlx_eye(
                 res,
                 n,
                 m.unwrap_or(n),
@@ -96,7 +96,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice, array};
+    /// use quill_mlx::{Array, StreamOrDevice, array};
     /// //  create [5, 4] array filled with 7
     /// let r = Array::full_device::<f32>(&[5, 4], array!(7.0f32), StreamOrDevice::default()).unwrap();
     /// ```
@@ -107,7 +107,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_full(
+            quill_mlx_sys::mlx_full(
                 res,
                 shape.as_ptr(),
                 shape.len(),
@@ -127,14 +127,14 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// //  create [10, 10] array with 1's on the diagonal.
     /// let r = Array::identity_device::<f32>(10, StreamOrDevice::default()).unwrap();
     /// ```
     #[default_device]
     pub fn identity_device<T: ArrayElement>(n: i32, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_identity(res, n, T::DTYPE.into(), stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_identity(res, n, T::DTYPE.into(), stream.as_ref().as_ptr())
         })
     }
 
@@ -151,7 +151,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     ///
     /// // Create a 1-D array with values from 0 to 50
     /// let r = Array::arange::<_, f32>(None, 50, None);
@@ -172,7 +172,7 @@ impl Array {
         let step: f64 = step.into().and_then(NumCast::from).unwrap_or(1.0);
 
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_arange(
+            quill_mlx_sys::mlx_arange(
                 res,
                 start,
                 stop,
@@ -194,7 +194,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// // Create a 50 element 1-D array with values from 0 to 50
     /// let r = Array::linspace_device::<_, f32>(0, 50, None, StreamOrDevice::default()).unwrap();
     /// ```
@@ -214,7 +214,7 @@ impl Array {
         let stop_f32 = NumCast::from(stop).unwrap();
 
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linspace(
+            quill_mlx_sys::mlx_linspace(
                 res,
                 start_f32,
                 stop_f32,
@@ -236,7 +236,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// // repeat a [2, 2] array 4 times along axis 1
     /// let source = Array::from_slice(&[0, 1, 2, 3], &[2, 2]);
     /// let r = Array::repeat_axis::<i32>(source, 4, 1).unwrap();
@@ -249,7 +249,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_repeat_axis(res, array.as_ptr(), count, axis, stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_repeat_axis(res, array.as_ptr(), count, axis, stream.as_ref().as_ptr())
         })
     }
 
@@ -263,7 +263,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// // repeat a 4 element array 4 times along axis 0
     /// let source = Array::from_slice(&[0, 1, 2, 3], &[2, 2]);
     /// let r = Array::repeat::<i32>(source, 4).unwrap();
@@ -275,7 +275,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_repeat(res, array.as_ptr(), count, stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_repeat(res, array.as_ptr(), count, stream.as_ref().as_ptr())
         })
     }
 
@@ -290,7 +290,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// // [5, 5] array with the lower triangle filled with 1s
     /// let r = Array::tri_device::<f32>(5, None, None, StreamOrDevice::default());
     /// ```
@@ -302,7 +302,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_tri(
+            quill_mlx_sys::mlx_tri(
                 res,
                 n,
                 m.unwrap_or(n),
@@ -346,7 +346,7 @@ pub fn zeros_dtype_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_zeros(
+        quill_mlx_sys::mlx_zeros(
             res,
             shape.as_ptr(),
             shape.len(),
@@ -388,7 +388,7 @@ pub fn ones_dtype_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_ones(
+        quill_mlx_sys::mlx_ones(
             res,
             shape.as_ptr(),
             shape.len(),
@@ -515,7 +515,7 @@ pub fn tril_device(
     let a = a.as_ref();
     let k = k.into().unwrap_or(0);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_tril(res, a.as_ptr(), k, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_tril(res, a.as_ptr(), k, stream.as_ref().as_ptr())
     })
 }
 
@@ -535,7 +535,7 @@ pub fn triu_device(
     let a = a.as_ref();
     let k = k.into().unwrap_or(0);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_triu(res, a.as_ptr(), k, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_triu(res, a.as_ptr(), k, stream.as_ref().as_ptr())
     })
 }
 

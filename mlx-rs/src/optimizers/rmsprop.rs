@@ -5,7 +5,7 @@ use crate::{
     ops::{sqrt, square},
     Array,
 };
-use mlx_internal_macros::{generate_builder, Buildable};
+use quill_mlx_internal_macros::{generate_builder, Buildable};
 
 use crate::{error::RmsPropBuildError, utils::get_mut_or_insert_with};
 

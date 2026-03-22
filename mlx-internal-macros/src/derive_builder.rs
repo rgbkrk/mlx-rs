@@ -23,7 +23,7 @@ pub(crate) fn expand_derive_builder(input: DeriveInput) -> Result<proc_macro2::T
     );
     let root = match builder_struct_prop.root {
         Some(path) => path,
-        None => syn::parse_quote!(::mlx_rs),
+        None => syn::parse_quote!(::quill_mlx),
     };
 
     let builder_struct_ident = PathOrIdent::Ident(builder_ident.clone());

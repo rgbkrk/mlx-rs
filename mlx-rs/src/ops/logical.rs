@@ -2,7 +2,7 @@ use crate::array::Array;
 use crate::error::Result;
 use crate::utils::guard::Guarded;
 use crate::Stream;
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 
 impl Array {
     /// Element-wise equality returning an error if the arrays are not broadcastable.
@@ -17,7 +17,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[1, 2, 3], &[3]);
     /// let b = Array::from_slice(&[1, 2, 3], &[3]);
     /// let mut c = a.eq(&b).unwrap();
@@ -28,7 +28,7 @@ impl Array {
     #[default_device]
     pub fn eq_device(&self, other: impl AsRef<Array>, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_equal(
+            quill_mlx_sys::mlx_equal(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -49,7 +49,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[1, 2, 3], &[3]);
     /// let b = Array::from_slice(&[1, 2, 3], &[3]);
     /// let mut c = a.le(&b).unwrap();
@@ -60,7 +60,7 @@ impl Array {
     #[default_device]
     pub fn le_device(&self, other: impl AsRef<Array>, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_less_equal(
+            quill_mlx_sys::mlx_less_equal(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -81,7 +81,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[1, 2, 3], &[3]);
     /// let b = Array::from_slice(&[1, 2, 3], &[3]);
     /// let mut c = a.ge(&b).unwrap();
@@ -92,7 +92,7 @@ impl Array {
     #[default_device]
     pub fn ge_device(&self, other: impl AsRef<Array>, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_greater_equal(
+            quill_mlx_sys::mlx_greater_equal(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -113,7 +113,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[1, 2, 3], &[3]);
     /// let b = Array::from_slice(&[1, 2, 3], &[3]);
     /// let mut c = a.ne(&b).unwrap();
@@ -124,7 +124,7 @@ impl Array {
     #[default_device]
     pub fn ne_device(&self, other: impl AsRef<Array>, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_not_equal(
+            quill_mlx_sys::mlx_not_equal(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -144,7 +144,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[1, 2, 3], &[3]);
     /// let b = Array::from_slice(&[1, 2, 3], &[3]);
     /// let mut c = a.lt(&b).unwrap();
@@ -155,7 +155,7 @@ impl Array {
     #[default_device]
     pub fn lt_device(&self, other: impl AsRef<Array>, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_less(
+            quill_mlx_sys::mlx_less(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -175,7 +175,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[1, 2, 3], &[3]);
     /// let b = Array::from_slice(&[1, 2, 3], &[3]);
     /// let mut c = a.gt(&b).unwrap();
@@ -186,7 +186,7 @@ impl Array {
     #[default_device]
     pub fn gt_device(&self, other: impl AsRef<Array>, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_greater(
+            quill_mlx_sys::mlx_greater(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -206,7 +206,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[true, false, true], &[3]);
     /// let b = Array::from_slice(&[true, true, false], &[3]);
     /// let mut c = a.logical_and(&b).unwrap();
@@ -221,7 +221,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_logical_and(
+            quill_mlx_sys::mlx_logical_and(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -241,7 +241,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[true, false, true], &[3]);
     /// let b = Array::from_slice(&[true, true, false], &[3]);
     /// let mut c = a.logical_or(&b).unwrap();
@@ -256,7 +256,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_logical_or(
+            quill_mlx_sys::mlx_logical_or(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -270,7 +270,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::{Array, StreamOrDevice};
+    /// use quill_mlx::{Array, StreamOrDevice};
     /// let a: Array = false.into();
     /// let mut b = a.logical_not_device(StreamOrDevice::default()).unwrap();
     ///
@@ -280,7 +280,7 @@ impl Array {
     #[default_device]
     pub fn logical_not_device(&self, stream: impl AsRef<Stream>) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_logical_not(res, self.as_ptr(), stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_logical_not(res, self.as_ptr(), stream.as_ref().as_ptr())
         })
     }
 
@@ -303,7 +303,7 @@ impl Array {
     ///
     /// ```rust
     /// use num_traits::Pow;
-    /// use mlx_rs::array;
+    /// use quill_mlx::array;
     /// let a = array!([0., 1., 2., 3.]).sqrt().unwrap();
     /// let b = array!([0., 1., 2., 3.]).power(array!(0.5)).unwrap();
     /// let mut c = a.all_close(&b, None, None, None).unwrap();
@@ -321,7 +321,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_allclose(
+            quill_mlx_sys::mlx_allclose(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -355,7 +355,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_isclose(
+            quill_mlx_sys::mlx_isclose(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -381,7 +381,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     /// let a = Array::from_slice(&[0, 1, 2, 3], &[4]);
     /// let b = Array::from_slice(&[0., 1., 2., 3.], &[4]);
     ///
@@ -396,7 +396,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_array_equal(
+            quill_mlx_sys::mlx_array_equal(
                 res,
                 self.as_ptr(),
                 other.as_ref().as_ptr(),
@@ -416,7 +416,7 @@ impl Array {
     ///  # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     ///
     /// let array = Array::from_slice(&[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], &[3, 4]);
     ///
@@ -434,7 +434,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_any_axes(
+            quill_mlx_sys::mlx_any_axes(
                 res,
                 self.as_ptr(),
                 axes.as_ptr(),
@@ -454,7 +454,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_any_axis(
+            quill_mlx_sys::mlx_any_axis(
                 res,
                 self.as_ptr(),
                 axis,
@@ -472,7 +472,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_any(
+            quill_mlx_sys::mlx_any(
                 res,
                 self.as_ptr(),
                 keep_dims.into().unwrap_or(false),
@@ -666,7 +666,7 @@ pub fn is_nan_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_isnan(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_isnan(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -678,7 +678,7 @@ pub fn is_inf_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_isinf(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_isinf(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -690,7 +690,7 @@ pub fn is_pos_inf_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_isposinf(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_isposinf(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -702,7 +702,7 @@ pub fn is_neg_inf_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_isneginf(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_isneginf(res, array.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -726,7 +726,7 @@ pub fn r#where_device(
     stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_where(
+        quill_mlx_sys::mlx_where(
             res,
             condition.as_ref().as_ptr(),
             a.as_ref().as_ptr(),

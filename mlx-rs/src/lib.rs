@@ -17,7 +17,7 @@
 //! ## Basics
 //!
 //! ```rust
-//! use mlx_rs::{array, Dtype};
+//! use quill_mlx::{array, Dtype};
 //!
 //! let a = array!([1, 2, 3, 4]);
 //! assert_eq!(a.shape(), &[4]);
@@ -33,7 +33,7 @@
 //! the underlying data with [`Array::as_slice`].
 //!
 //! ```rust
-//! use mlx_rs::{array, transforms::eval};
+//! use quill_mlx::{array, transforms::eval};
 //!
 //! let a = array!([1, 2, 3, 4]);
 //! let b = array!([1.0, 2.0, 3.0, 4.0]);
@@ -210,11 +210,11 @@
 //! location:
 //!
 //! ```rust
-//! // let a = mlx_rs::random::normal(&[100], None, None, None, None).unwrap();
-//! // let b = mlx_rs::random::normal(&[100], None, None, None, None).unwrap();
+//! // let a = quill_mlx::random::normal(&[100], None, None, None, None).unwrap();
+//! // let b = quill_mlx::random::normal(&[100], None, None, None, None).unwrap();
 //!
-//! let a = mlx_rs::normal!(shape=&[100]).unwrap();
-//! let b = mlx_rs::normal!(shape=&[100]).unwrap();
+//! let a = quill_mlx::normal!(shape=&[100]).unwrap();
+//! let b = quill_mlx::normal!(shape=&[100]).unwrap();
 //! ```
 //!
 //! Both `a` and `b` live in unified memory.
@@ -225,11 +225,11 @@
 //! example:
 //!
 //! ```rust,ignore
-//! // mlx_rs::ops::add_device(&a, &b, StreamOrDevice::cpu()).unwrap();
-//! // mlx_rs::ops::add_device(&a, &b, StreamOrDevice::gpu()).unwrap();
+//! // quill_mlx::ops::add_device(&a, &b, StreamOrDevice::cpu()).unwrap();
+//! // quill_mlx::ops::add_device(&a, &b, StreamOrDevice::gpu()).unwrap();
 //!
-//! mlx_rs::add!(&a, &b, stream=StreamOrDevice::cpu()).unwrap();
-//! mlx_rs::add!(&a, &b, stream=StreamOrDevice::gpu()).unwrap();
+//! quill_mlx::add!(&a, &b, stream=StreamOrDevice::cpu()).unwrap();
+//! quill_mlx::add!(&a, &b, stream=StreamOrDevice::gpu()).unwrap();
 //! ```
 //!
 //! In the above, both the CPU and the GPU will perform the same add operation.
@@ -292,6 +292,7 @@ pub mod fast;
 pub mod fft;
 pub mod linalg;
 pub mod losses;
+pub mod metal;
 pub mod module;
 pub mod nested;
 pub mod nn;

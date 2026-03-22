@@ -378,7 +378,7 @@ where
     // but will be able to re-evaluate with fresh state if needed
     let compiled = Closure::try_from_op(|res| unsafe {
         let constants = &[];
-        mlx_sys::mlx_detail_compile(
+        quill_mlx_sys::mlx_detail_compile(
             res,
             inner_closure.as_ptr(),
             fun_id,
@@ -400,7 +400,7 @@ where
     // will compile the function (if needed) and evaluate the
     // compiled graph
     let result_vector = VectorArray::try_from_op(|res| unsafe {
-        mlx_sys::mlx_closure_apply(res, compiled.as_ptr(), inner_inputs_vector.as_ptr())
+        quill_mlx_sys::mlx_closure_apply(res, compiled.as_ptr(), inner_inputs_vector.as_ptr())
     })?;
 
     // number of states may change during the call

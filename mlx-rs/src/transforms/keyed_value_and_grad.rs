@@ -35,7 +35,7 @@ macro_rules! keyed_value_and_grad {
 
             let closure = Closure::$cls_new(inner);
             let cvg = ClosureValueAndGrad::try_from_op(|res| unsafe {
-                mlx_sys::mlx_value_and_grad(
+                quill_mlx_sys::mlx_value_and_grad(
                     res,
                     closure.as_ptr(),
                     argument_numbers.as_ptr(),

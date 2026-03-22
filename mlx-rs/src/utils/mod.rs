@@ -1,7 +1,7 @@
 //! Utility functions and types.
 
 use guard::Guarded;
-use mlx_sys::mlx_vector_array;
+use quill_mlx_sys::mlx_vector_array;
 
 use crate::error::set_closure_error;
 use crate::module::ModuleParameters;
@@ -44,15 +44,15 @@ pub(crate) fn axes_or_default_to_all<'a>(axes: impl IntoOption<&'a [i32]>, ndim:
 }
 
 pub(crate) struct VectorArray {
-    c_vec: mlx_sys::mlx_vector_array,
+    c_vec: quill_mlx_sys::mlx_vector_array,
 }
 
 impl VectorArray {
-    pub(crate) fn as_ptr(&self) -> mlx_sys::mlx_vector_array {
+    pub(crate) fn as_ptr(&self) -> quill_mlx_sys::mlx_vector_array {
         self.c_vec
     }
 
-    pub(crate) unsafe fn from_ptr(c_vec: mlx_sys::mlx_vector_array) -> Self {
+    pub(crate) unsafe fn from_ptr(c_vec: quill_mlx_sys::mlx_vector_array) -> Self {
         Self { c_vec }
     }
 
@@ -62,7 +62,7 @@ impl VectorArray {
         VectorArray::try_from_op(|res| unsafe {
             let mut status = SUCCESS;
             for arr in iter {
-                status = mlx_sys::mlx_vector_array_append_value(*res, arr.as_ref().as_ptr());
+                status = quill_mlx_sys::mlx_vector_array_append_value(*res, arr.as_ref().as_ptr());
                 if status != SUCCESS {
                     return status;
                 }
@@ -76,10 +76,10 @@ impl VectorArray {
         T: FromIterator<Array>,
     {
         unsafe {
-            let size = mlx_sys::mlx_vector_array_size(self.c_vec);
+            let size = quill_mlx_sys::mlx_vector_array_size(self.c_vec);
             (0..size)
                 .map(|i| {
-                    Array::try_from_op(|res| mlx_sys::mlx_vector_array_get(res, self.c_vec, i))
+                    Array::try_from_op(|res| quill_mlx_sys::mlx_vector_array_get(res, self.c_vec, i))
                 })
                 .collect::<Result<T, Exception>>()
         }
@@ -88,7 +88,7 @@ impl VectorArray {
 
 impl Drop for VectorArray {
     fn drop(&mut self) {
-        let status = unsafe { mlx_sys::mlx_vector_array_free(self.c_vec) };
+        let status = unsafe { quill_mlx_sys::mlx_vector_array_free(self.c_vec) };
         debug_assert_eq!(status, SUCCESS);
     }
 }
@@ -204,12 +204,12 @@ where
 
 #[derive(Debug)]
 pub(crate) struct Closure<'a> {
-    c_closure: mlx_sys::mlx_closure,
+    c_closure: quill_mlx_sys::mlx_closure,
     lt_marker: PhantomData<&'a ()>,
 }
 
 impl<'a> Closure<'a> {
-    pub(crate) fn as_ptr(&self) -> mlx_sys::mlx_closure {
+    pub(crate) fn as_ptr(&self) -> quill_mlx_sys::mlx_closure {
         self.c_closure
     }
 
@@ -238,13 +238,13 @@ impl<'a> Closure<'a> {
 
 impl Drop for Closure<'_> {
     fn drop(&mut self) {
-        let status = unsafe { mlx_sys::mlx_closure_free(self.c_closure) };
+        let status = unsafe { quill_mlx_sys::mlx_closure_free(self.c_closure) };
         debug_assert_eq!(status, SUCCESS);
     }
 }
 
 /// Helper method to create a mlx_closure from a Rust closure.
-fn new_mlx_closure<'a, F>(closure: F) -> mlx_sys::mlx_closure
+fn new_mlx_closure<'a, F>(closure: F) -> quill_mlx_sys::mlx_closure
 where
     F: FnMut(&[Array]) -> Vec<Array> + 'a,
 {
@@ -256,7 +256,7 @@ where
     let payload = raw as *mut std::ffi::c_void;
 
     unsafe {
-        mlx_sys::mlx_closure_new_func_payload(
+        quill_mlx_sys::mlx_closure_new_func_payload(
             Some(trampoline::<F>),
             payload,
             Some(closure_dtor::<F>),
@@ -264,7 +264,7 @@ where
     }
 }
 
-fn new_mlx_fallible_closure<'a, F>(closure: F) -> mlx_sys::mlx_closure
+fn new_mlx_fallible_closure<'a, F>(closure: F) -> quill_mlx_sys::mlx_closure
 where
     F: FnMut(&[Array]) -> Result<Vec<Array>, Exception> + 'a,
 {
@@ -273,7 +273,7 @@ where
     let payload = raw as *mut std::ffi::c_void;
 
     unsafe {
-        mlx_sys::mlx_closure_new_func_payload(
+        quill_mlx_sys::mlx_closure_new_func_payload(
             Some(trampoline_fallible::<F>),
             payload,
             Some(closure_dtor::<F>),
@@ -282,23 +282,23 @@ where
 }
 
 /// Function to create a new (+1 reference) mlx_vector_array from a vector of Array
-fn new_mlx_vector_array(arrays: Vec<Array>) -> mlx_sys::mlx_vector_array {
+fn new_mlx_vector_array(arrays: Vec<Array>) -> quill_mlx_sys::mlx_vector_array {
     unsafe {
-        let result = mlx_sys::mlx_vector_array_new();
-        let ctx_ptrs: Vec<mlx_sys::mlx_array> = arrays.iter().map(|array| array.as_ptr()).collect();
-        mlx_sys::mlx_vector_array_append_data(result, ctx_ptrs.as_ptr(), arrays.len());
+        let result = quill_mlx_sys::mlx_vector_array_new();
+        let ctx_ptrs: Vec<quill_mlx_sys::mlx_array> = arrays.iter().map(|array| array.as_ptr()).collect();
+        quill_mlx_sys::mlx_vector_array_append_data(result, ctx_ptrs.as_ptr(), arrays.len());
         result
     }
 }
 
 fn mlx_vector_array_values(
-    vector_array: mlx_sys::mlx_vector_array,
+    vector_array: quill_mlx_sys::mlx_vector_array,
 ) -> Result<Vec<Array>, Exception> {
     unsafe {
-        let size = mlx_sys::mlx_vector_array_size(vector_array);
+        let size = quill_mlx_sys::mlx_vector_array_size(vector_array);
         (0..size)
             .map(|index| {
-                Array::try_from_op(|res| mlx_sys::mlx_vector_array_get(res, vector_array, index))
+                Array::try_from_op(|res| quill_mlx_sys::mlx_vector_array_get(res, vector_array, index))
             })
             .collect()
     }

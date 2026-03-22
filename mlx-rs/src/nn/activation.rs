@@ -9,8 +9,8 @@ use crate::{
     transforms::compile::compile,
     Array,
 };
-use mlx_internal_macros::{generate_builder, Buildable, Builder};
-use mlx_macros::ModuleParameters;
+use quill_mlx_internal_macros::{generate_builder, Buildable, Builder};
+use quill_mlx_macros::ModuleParameters;
 
 /// Applies the element-wise sigmoid logistic sigmoid.
 ///

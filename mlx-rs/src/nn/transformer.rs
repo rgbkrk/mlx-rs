@@ -10,8 +10,8 @@ use crate::{
     Array, ArrayElement, FromScalar,
 };
 use dyn_clone::DynClone;
-use mlx_internal_macros::{generate_builder, Buildable, Builder};
-use mlx_macros::{ModuleParameters, Quantizable};
+use quill_mlx_internal_macros::{generate_builder, Buildable, Builder};
+use quill_mlx_macros::{ModuleParameters, Quantizable};
 use num_traits::bounds::LowerBounded;
 
 use crate::{

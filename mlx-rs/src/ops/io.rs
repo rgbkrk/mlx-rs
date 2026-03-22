@@ -3,7 +3,7 @@ use crate::utils::guard::Guarded;
 use crate::utils::io::SafeTensors;
 use crate::utils::SUCCESS;
 use crate::{Array, Stream};
-use mlx_internal_macros::default_device;
+use quill_mlx_internal_macros::default_device;
 use std::collections::HashMap;
 use std::ffi::CString;
 use std::path::Path;
@@ -35,7 +35,7 @@ impl Array {
         check_file_extension(path, "npy")?;
 
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_load(res, c_path.as_ptr(), stream.as_ref().as_ptr())
+            quill_mlx_sys::mlx_load(res, c_path.as_ptr(), stream.as_ref().as_ptr())
         })
         .map_err(Into::into)
     }
@@ -87,7 +87,7 @@ impl Array {
         check_file_extension(path, "npy")?;
         let c_path = CString::new(path.to_str().ok_or(IoError::InvalidUtf8)?)?;
 
-        unsafe { mlx_sys::mlx_save(c_path.as_ptr(), self.as_ptr()) };
+        unsafe { quill_mlx_sys::mlx_save(c_path.as_ptr(), self.as_ptr()) };
 
         Ok(())
     }
@@ -118,18 +118,18 @@ impl Array {
         check_file_extension(path, "safetensors")?;
 
         let arrays = unsafe {
-            let data = mlx_sys::mlx_map_string_to_array_new();
+            let data = quill_mlx_sys::mlx_map_string_to_array_new();
             for (key, array) in arrays.into_iter() {
                 let key = CString::new(key.as_ref())?;
 
-                let status = mlx_sys::mlx_map_string_to_array_insert(
+                let status = quill_mlx_sys::mlx_map_string_to_array_insert(
                     data,
                     key.as_ptr(),
                     array.as_ref().as_ptr(),
                 );
 
                 if status != SUCCESS {
-                    mlx_sys::mlx_map_string_to_array_free(data);
+                    quill_mlx_sys::mlx_map_string_to_array_free(data);
                     return Err(crate::error::get_and_clear_last_mlx_error()
                         .expect("A non-success status was returned, but no error was set.")
                         .into());
@@ -142,16 +142,16 @@ impl Array {
         let metadata_ref = metadata.into().unwrap_or(&default_metadata);
 
         let metadata = unsafe {
-            let data = mlx_sys::mlx_map_string_to_string_new();
+            let data = quill_mlx_sys::mlx_map_string_to_string_new();
             for (key, value) in metadata_ref.iter() {
                 let key = CString::new(key.as_str())?;
                 let value = CString::new(value.as_str())?;
 
                 let status =
-                    mlx_sys::mlx_map_string_to_string_insert(data, key.as_ptr(), value.as_ptr());
+                    quill_mlx_sys::mlx_map_string_to_string_insert(data, key.as_ptr(), value.as_ptr());
 
                 if status != SUCCESS {
-                    mlx_sys::mlx_map_string_to_string_free(data);
+                    quill_mlx_sys::mlx_map_string_to_string_free(data);
                     return Err(crate::error::get_and_clear_last_mlx_error()
                         .expect("A non-success status was returned, but no error was set.")
                         .into());
@@ -163,7 +163,7 @@ impl Array {
         let c_path = CString::new(path.to_str().ok_or(IoError::InvalidUtf8)?)?;
 
         unsafe {
-            let status = mlx_sys::mlx_save_safetensors(c_path.as_ptr(), arrays, metadata);
+            let status = quill_mlx_sys::mlx_save_safetensors(c_path.as_ptr(), arrays, metadata);
 
             let last_error = match status {
                 SUCCESS => None,
@@ -173,8 +173,8 @@ impl Array {
                 ),
             };
 
-            mlx_sys::mlx_map_string_to_array_free(arrays);
-            mlx_sys::mlx_map_string_to_string_free(metadata);
+            quill_mlx_sys::mlx_map_string_to_array_free(arrays);
+            quill_mlx_sys::mlx_map_string_to_string_free(metadata);
 
             if let Some(error) = last_error {
                 return Err(error.into());

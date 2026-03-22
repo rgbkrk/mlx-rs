@@ -4,7 +4,7 @@ use crate::error::{Exception, Result};
 use crate::utils::guard::Guarded;
 use crate::utils::{IntoOption, VectorArray};
 use crate::{Array, Stream};
-use mlx_internal_macros::{default_device, generate_macro};
+use quill_mlx_internal_macros::{default_device, generate_macro};
 use smallvec::SmallVec;
 use std::f64;
 use std::ffi::CString;
@@ -74,7 +74,7 @@ pub fn norm_device<'a>(
 
     match axes.into_option() {
         Some(axes) => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linalg_norm(
+            quill_mlx_sys::mlx_linalg_norm(
                 res,
                 array.as_ref().as_ptr(),
                 ord,
@@ -85,7 +85,7 @@ pub fn norm_device<'a>(
             )
         }),
         None => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linalg_norm(
+            quill_mlx_sys::mlx_linalg_norm(
                 res,
                 array.as_ref().as_ptr(),
                 ord,
@@ -113,7 +113,7 @@ pub fn norm_matrix_device<'a>(
 
     match axes.into_option() {
         Some(axes) => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linalg_norm_matrix(
+            quill_mlx_sys::mlx_linalg_norm_matrix(
                 res,
                 array.as_ref().as_ptr(),
                 ord.as_ptr(),
@@ -124,7 +124,7 @@ pub fn norm_matrix_device<'a>(
             )
         }),
         None => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linalg_norm_matrix(
+            quill_mlx_sys::mlx_linalg_norm_matrix(
                 res,
                 array.as_ref().as_ptr(),
                 ord.as_ptr(),
@@ -150,7 +150,7 @@ pub fn norm_l2_device<'a>(
 
     match axes.into_option() {
         Some(axis) => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linalg_norm_l2(
+            quill_mlx_sys::mlx_linalg_norm_l2(
                 res,
                 array.as_ref().as_ptr(),
                 axis.as_ptr(),
@@ -160,7 +160,7 @@ pub fn norm_l2_device<'a>(
             )
         }),
         None => Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_linalg_norm_l2(
+            quill_mlx_sys::mlx_linalg_norm_l2(
                 res,
                 array.as_ref().as_ptr(),
                 std::ptr::null(),
@@ -229,7 +229,7 @@ pub fn norm_l2_device<'a>(
 //         (None, None) => {
 //             let axes_ptr = std::ptr::null(); // mlx-c already handles the case where axes is null
 //             Array::try_from_op(|res| unsafe {
-//                 mlx_sys::mlx_linalg_norm(
+//                 quill_mlx_sys::mlx_linalg_norm(
 //                     res,
 //                     array.as_ref().as_ptr(),
 //                     axes_ptr,
@@ -247,7 +247,7 @@ pub fn norm_l2_device<'a>(
 //         // If axis is provided, but ord is not, then the 2-norm (or Frobenius norm for matrices) is
 //         // computed along the given axes. At most 2 axes can be specified.
 //         (None, Some(axes)) => Array::try_from_op(|res| unsafe {
-//             mlx_sys::mlx_linalg_norm(
+//             quill_mlx_sys::mlx_linalg_norm(
 //                 res,
 //                 array.as_ref().as_ptr(),
 //                 axes.as_ptr(),
@@ -277,7 +277,7 @@ pub fn norm_l2_device<'a>(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, StreamOrDevice, linalg::*};
+/// use quill_mlx::{Array, StreamOrDevice, linalg::*};
 ///
 /// let a = Array::from_slice(&[2.0f32, 3.0, 1.0, 2.0], &[2, 2]);
 ///
@@ -296,7 +296,7 @@ pub fn qr_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<(Array, Array)> {
     <(Array, Array)>::try_from_op(|(res_0, res_1)| unsafe {
-        mlx_sys::mlx_linalg_qr(res_0, res_1, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_qr(res_0, res_1, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -316,7 +316,7 @@ pub fn qr_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, StreamOrDevice, linalg::*};
+/// use quill_mlx::{Array, StreamOrDevice, linalg::*};
 ///
 /// let a = Array::from_slice(&[1.0f32, 2.0, 3.0, 4.0], &[2, 2]);
 /// let (u, s, vt) = svd_device(&a, StreamOrDevice::cpu()).unwrap();
@@ -334,7 +334,7 @@ pub fn svd_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<(Array, Array, Array)> {
     let v = VectorArray::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_svd(res, array.as_ref().as_ptr(), true, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_svd(res, array.as_ref().as_ptr(), true, stream.as_ref().as_ptr())
     })?;
 
     let vals: SmallVec<[Array; 3]> = v.try_into_values()?;
@@ -360,7 +360,7 @@ pub fn svd_device(
 /// # Example
 ///
 /// ```rust
-/// use mlx_rs::{Array, StreamOrDevice, linalg::*};
+/// use quill_mlx::{Array, StreamOrDevice, linalg::*};
 ///
 /// let a = Array::from_slice(&[1.0f32, 2.0, 3.0, 4.0], &[2, 2]);
 /// let a_inv = inv_device(&a, StreamOrDevice::cpu()).unwrap();
@@ -371,7 +371,7 @@ pub fn svd_device(
 #[default_device]
 pub fn inv_device(a: impl AsRef<Array>, #[optional] stream: impl AsRef<Stream>) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_inv(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_inv(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -397,7 +397,7 @@ pub fn cholesky_device(
 ) -> Result<Array> {
     let upper = upper.unwrap_or(false);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_cholesky(res, a.as_ref().as_ptr(), upper, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_cholesky(res, a.as_ref().as_ptr(), upper, stream.as_ref().as_ptr())
     })
 }
 
@@ -413,7 +413,7 @@ pub fn cholesky_inv_device(
 ) -> Result<Array> {
     let upper = upper.unwrap_or(false);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_cholesky_inv(res, a.as_ref().as_ptr(), upper, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_cholesky_inv(res, a.as_ref().as_ptr(), upper, stream.as_ref().as_ptr())
     })
 }
 
@@ -431,7 +431,7 @@ pub fn cross_device(
 ) -> Result<Array> {
     let axis = axis.unwrap_or(-1);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_cross(
+        quill_mlx_sys::mlx_linalg_cross(
             res,
             a.as_ref().as_ptr(),
             b.as_ref().as_ptr(),
@@ -457,7 +457,7 @@ pub fn eigh_device(
     let uplo = CString::new(uplo.unwrap_or("L")).map_err(|e| Exception::custom(format!("{e}")))?;
 
     <(Array, Array) as Guarded>::try_from_op(|(res_0, res_1)| unsafe {
-        mlx_sys::mlx_linalg_eigh(
+        quill_mlx_sys::mlx_linalg_eigh(
             res_0,
             res_1,
             a.as_ptr(),
@@ -481,7 +481,7 @@ pub fn eigvalsh_device(
     let a = a.as_ref();
     let uplo = CString::new(uplo.unwrap_or("L")).map_err(|e| Exception::custom(format!("{e}")))?;
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_eigvalsh(res, a.as_ptr(), uplo.as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_eigvalsh(res, a.as_ptr(), uplo.as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -490,7 +490,7 @@ pub fn eigvalsh_device(
 #[default_device]
 pub fn pinv_device(a: impl AsRef<Array>, #[optional] stream: impl AsRef<Stream>) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_pinv(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_pinv(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -507,7 +507,7 @@ pub fn tri_inv_device(
 ) -> Result<Array> {
     let upper = upper.unwrap_or(false);
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_tri_inv(res, a.as_ref().as_ptr(), upper, stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_tri_inv(res, a.as_ref().as_ptr(), upper, stream.as_ref().as_ptr())
     })
 }
 
@@ -522,8 +522,8 @@ pub fn tri_inv_device(
 /// ```rust,ignore
 /// // python
 /// // P = mx.put_along_axis(mx.zeros_like(L), p[..., None], mx.array(1.0), axis=-1)
-/// let p = mlx_rs::ops::put_along_axis(
-///     mlx_rs::ops::zeros_like(&l),
+/// let p = quill_mlx::ops::put_along_axis(
+///     quill_mlx::ops::zeros_like(&l),
 ///     p.index((Ellipsis, NewAxis)),
 ///     array!(1.0),
 ///     -1,
@@ -545,7 +545,7 @@ pub fn lu_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<(Array, Array, Array)> {
     let v = Vec::<Array>::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_lu(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_lu(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })?;
     let mut iter = v.into_iter();
     let p = iter.next().ok_or_else(|| Exception::custom("missing P"))?;
@@ -571,7 +571,7 @@ pub fn lu_factor_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<(Array, Array)> {
     <(Array, Array)>::try_from_op(|(res_0, res_1)| unsafe {
-        mlx_sys::mlx_linalg_lu_factor(res_0, res_1, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_linalg_lu_factor(res_0, res_1, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
@@ -594,7 +594,7 @@ pub fn solve_device(
     #[optional] stream: impl AsRef<Stream>,
 ) -> Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_solve(
+        quill_mlx_sys::mlx_linalg_solve(
             res,
             a.as_ref().as_ptr(),
             b.as_ref().as_ptr(),
@@ -626,7 +626,7 @@ pub fn solve_triangular_device(
     let upper = upper.into().unwrap_or(false);
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_linalg_solve_triangular(
+        quill_mlx_sys::mlx_linalg_solve_triangular(
             res,
             a.as_ref().as_ptr(),
             b.as_ref().as_ptr(),

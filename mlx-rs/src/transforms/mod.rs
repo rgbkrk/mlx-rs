@@ -26,7 +26,7 @@
 //! TODO: update the example once https://github.com/oxideai/mlx-rs/pull/218 is merged
 //!
 //! ```rust,ignore
-//! use mlx_rs::{Array, error::Result, transforms::grad};
+//! use quill_mlx::{Array, error::Result, transforms::grad};
 //!
 //! fn f(x: &Array) -> Result<Array> {
 //!     x.square()
@@ -45,7 +45,7 @@
 //! assert_eq!(dfdx2.item::<f32>(), 2.0);
 //! ```
 
-use mlx_sys::mlx_closure_value_and_grad;
+use quill_mlx_sys::mlx_closure_value_and_grad;
 
 use crate::{
     error::{get_and_clear_closure_error, Result},
@@ -66,7 +66,7 @@ pub use value_and_grad::*;
 /// Evaluate an iterator of [`Array`]s.
 pub fn eval<'a>(outputs: impl IntoIterator<Item = &'a Array>) -> Result<()> {
     let vec = VectorArray::try_from_iter(outputs.into_iter())?;
-    <() as Guarded>::try_from_op(|_| unsafe { mlx_sys::mlx_eval(vec.as_ptr()) })
+    <() as Guarded>::try_from_op(|_| unsafe { quill_mlx_sys::mlx_eval(vec.as_ptr()) })
 }
 
 /// Evaluate a module's parameters.
@@ -81,7 +81,7 @@ pub fn eval_params(params: ModuleParamRef<'_>) -> Result<()> {
 /// Please note that this is not a rust async function.
 pub fn async_eval<'a>(outputs: impl IntoIterator<Item = &'a Array>) -> Result<()> {
     let vec = VectorArray::try_from_iter(outputs.into_iter())?;
-    <() as Guarded>::try_from_op(|_| unsafe { mlx_sys::mlx_async_eval(vec.as_ptr()) })
+    <() as Guarded>::try_from_op(|_| unsafe { quill_mlx_sys::mlx_async_eval(vec.as_ptr()) })
 }
 
 /// Asynchronously evaluate a module's parameters.
@@ -101,7 +101,7 @@ fn jvp_inner(
     let c_tangents = VectorArray::try_from_iter(tangents.iter())?;
 
     <(Vec<Array>, Vec<Array>) as Guarded>::try_from_op(|(res_0, res_1)| unsafe {
-        mlx_sys::mlx_jvp(
+        quill_mlx_sys::mlx_jvp(
             res_0,
             res_1,
             closure.as_ptr(),
@@ -164,7 +164,7 @@ fn vjp_inner(
     let c_cotangents = VectorArray::try_from_iter(cotangents.iter())?;
 
     <(Vec<Array>, Vec<Array>) as Guarded>::try_from_op(|(res_0, res_1)| unsafe {
-        mlx_sys::mlx_vjp(
+        quill_mlx_sys::mlx_vjp(
             res_0,
             res_1,
             closure.as_ptr(),
@@ -228,7 +228,7 @@ impl ClosureValueAndGrad {
 impl Drop for ClosureValueAndGrad {
     fn drop(&mut self) {
         let status =
-            unsafe { mlx_sys::mlx_closure_value_and_grad_free(self.c_closure_value_and_grad) };
+            unsafe { quill_mlx_sys::mlx_closure_value_and_grad_free(self.c_closure_value_and_grad) };
         debug_assert_eq!(status, SUCCESS);
     }
 }
@@ -240,7 +240,7 @@ fn value_and_gradient(
     let input_vector = VectorArray::try_from_iter(arrays)?;
 
     <(Vec<Array>, Vec<Array>) as Guarded>::try_from_op(|(res_0, res_1)| unsafe {
-        mlx_sys::mlx_closure_value_and_grad_apply(
+        quill_mlx_sys::mlx_closure_value_and_grad_apply(
             res_0,
             res_1,
             value_and_grad,

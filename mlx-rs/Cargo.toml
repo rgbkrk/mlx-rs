@@ -1,5 +1,5 @@
 [package]
-name = "mlx-rs"
+name = "quill-mlx"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -7,8 +7,7 @@ repository.workspace = true
 keywords.workspace = true
 categories.workspace = true
 license.workspace = true
-documentation.workspace = true
-description = "Unofficial rust wrapper for Apple's mlx machine learning library."
+description = "Rust bindings for Apple's MLX machine learning framework, with Metal memory management"
 readme = "README.md"
 
 [package.metadata.docs.rs]
@@ -19,9 +18,9 @@ targets = [
 ]
 
 [dependencies]
-mlx-sys.workspace = true
-mlx-internal-macros.workspace = true
-mlx-macros.workspace = true
+quill-mlx-sys.workspace = true
+quill-mlx-internal-macros.workspace = true
+quill-mlx-macros.workspace = true
 dyn-clone.workspace = true
 half.workspace = true
 mach-sys.workspace = true
@@ -48,8 +47,8 @@ tempfile.workspace = true
 [features]
 default = ["accelerate", "metal"]
 
-accelerate = ["mlx-sys/accelerate"]
-metal = ["mlx-sys/metal"]
+accelerate = ["quill-mlx-sys/accelerate"]
+metal = ["quill-mlx-sys/metal"]
 
 # Enables conversion between `Array` and `safetensors::TensorView`
 safetensors = ["dep:safetensors", "dep:bytemuck"]

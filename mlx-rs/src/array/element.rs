@@ -37,12 +37,12 @@ macro_rules! impl_array_element {
                     use crate::utils::guard::*;
 
                     <$type as Guarded>::try_from_op(|ptr| unsafe {
-                        mlx_sys::[<mlx_array_item_ $ctype >](ptr, array.as_ptr())
+                        quill_mlx_sys::[<mlx_array_item_ $ctype >](ptr, array.as_ptr())
                     })
                 }
 
                 fn array_data(array: &Array) -> *const Self {
-                    unsafe { mlx_sys::[<mlx_array_data_ $ctype >](array.as_ptr()) as *const Self }
+                    unsafe { quill_mlx_sys::[<mlx_array_data_ $ctype >](array.as_ptr()) as *const Self }
                 }
 
             }

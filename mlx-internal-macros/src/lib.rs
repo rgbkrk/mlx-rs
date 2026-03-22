@@ -172,7 +172,7 @@ pub fn generate_builder(input: TokenStream) -> TokenStream {
     .into()
 }
 
-/// Derive `mlx_rs::builder::Buildable` for a struct. When used with the `generate_builder` macro,
+/// Derive `quill_mlx::builder::Buildable` for a struct. When used with the `generate_builder` macro,
 /// a builder struct `<Struct>Builder` will be generated.
 ///
 /// # Attributes
@@ -182,7 +182,7 @@ pub fn generate_builder(input: TokenStream) -> TokenStream {
 /// ### Arguments
 ///
 /// - `builder`: Path to the builder struct. Default to `<Struct>Builder` if not provided.
-/// - `root`: Path to the root module. Default to `::mlx_rs` if not provided.
+/// - `root`: Path to the root module. Default to `::quill_mlx` if not provided.
 ///
 /// ## `#[builder]`
 ///
@@ -191,7 +191,7 @@ pub fn generate_builder(input: TokenStream) -> TokenStream {
 /// ### Arguments when applied on struct
 ///
 /// - `build_with`: Function ident to build the struct.
-/// - `root`: Path to the root module. Default to `::mlx_rs` if not provided.
+/// - `root`: Path to the root module. Default to `::quill_mlx` if not provided.
 /// - `err`: Type of error to return when build fails. Default to `std::convert::Infallible`
 ///   if not provided.
 /// - `default_infallible`: Whether the default error type is infallible. Default to `err.is_none()`
@@ -210,8 +210,8 @@ pub fn generate_builder(input: TokenStream) -> TokenStream {
 /// # Example
 ///
 /// ```rust,ignore
-/// use mlx_internal_macros::*;
-/// use mlx_rs::builder::{Buildable, Builder};
+/// use quill_mlx_internal_macros::*;
+/// use quill_mlx::builder::{Buildable, Builder};
 ///
 /// generate_builder! {
 ///     /// Test struct for the builder generation.
@@ -267,7 +267,7 @@ pub fn derive_buildable(input: TokenStream) -> TokenStream {
     TokenStream::from(builder)
 }
 
-/// Derive `mlx_rs::builder::Builder` trait for a struct and generate the following methods:
+/// Derive `quill_mlx::builder::Builder` trait for a struct and generate the following methods:
 ///
 /// - `<Struct>Builder::new(mandatory_fields)`: Create a new builder with the mandatory fields.
 /// - setter methods for each optinal field
@@ -280,7 +280,7 @@ pub fn derive_buildable(input: TokenStream) -> TokenStream {
 /// ### Arguments when applied on struct
 ///
 /// - `build_with`: Function ident to build the struct.
-/// - `root`: Path to the root module. Default to `::mlx_rs` if not provided.
+/// - `root`: Path to the root module. Default to `::quill_mlx` if not provided.
 /// - `err`: Type of error to return when build fails. Default to `std::convert::Infallible`
 ///   if not provided.
 /// - `default_infallible`: Whether the default error type is infallible. Default to `err.is_none()`
@@ -310,8 +310,8 @@ pub fn derive_builder(input: TokenStream) -> TokenStream {
 /// ```rust,ignore
 /// #![allow(unused_variables)]
 ///
-/// use mlx_internal_macros::{default_device, generate_macro};
-/// use mlx_rs::{Stream, StreamOrDevice};
+/// use quill_mlx_internal_macros::{default_device, generate_macro};
+/// use quill_mlx::{Stream, StreamOrDevice};
 ///
 /// /// Test macro generation.
 /// #[generate_macro(customize(root = "$crate"))] // Default is `$crate::ops`

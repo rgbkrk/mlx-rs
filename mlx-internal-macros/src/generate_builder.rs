@@ -26,7 +26,7 @@ pub(crate) fn expand_generate_builder(input: &DeriveInput) -> Result<proc_macro2
         syn::Ident::new(&format!("{struct_ident}Builder"), struct_ident.span());
     let root = match struct_prop.root {
         Some(path) => path,
-        None => syn::parse_quote!(::mlx_rs),
+        None => syn::parse_quote!(::quill_mlx),
     };
 
     let (mandatory_fields, optional_fields) = parse_fields_from_derive_input(input)?;

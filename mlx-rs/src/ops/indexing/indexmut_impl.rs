@@ -26,7 +26,7 @@ impl Array {
         stream: impl AsRef<Stream>,
     ) -> Result<Array> {
         Array::try_from_op(|res| unsafe {
-            mlx_sys::mlx_slice_update(
+            quill_mlx_sys::mlx_slice_update(
                 res,
                 self.as_ptr(),
                 update.as_ptr(),
@@ -561,7 +561,7 @@ unsafe fn scatter_device(
     let indices_vector = VectorArray::try_from_iter(indices.iter())?;
 
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_scatter(
+        quill_mlx_sys::mlx_scatter(
             res,
             a.as_ptr(),
             indices_vector.as_ptr(),

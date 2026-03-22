@@ -1,5 +1,5 @@
 use half::{bf16, f16};
-use mlx_sys::{__BindgenComplex, bfloat16_t, float16_t, mlx_array};
+use quill_mlx_sys::{__BindgenComplex, bfloat16_t, float16_t, mlx_array};
 
 use crate::{complex64, error::Exception, Array};
 
@@ -63,7 +63,7 @@ impl MaybeUninitArray {
     pub fn new() -> Self {
         unsafe {
             Self {
-                ptr: mlx_sys::mlx_array_new(),
+                ptr: quill_mlx_sys::mlx_array_new(),
                 init_success: false,
             }
         }
@@ -74,7 +74,7 @@ impl Drop for MaybeUninitArray {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_array_free(self.ptr);
+                quill_mlx_sys::mlx_array_free(self.ptr);
             }
         }
     }
@@ -102,7 +102,7 @@ impl Guarded for Array {
 }
 
 pub(crate) struct MaybeUninitVectorArray {
-    pub(crate) ptr: mlx_sys::mlx_vector_array,
+    pub(crate) ptr: quill_mlx_sys::mlx_vector_array,
     pub(crate) init_success: bool,
 }
 
@@ -116,7 +116,7 @@ impl MaybeUninitVectorArray {
     pub fn new() -> Self {
         unsafe {
             Self {
-                ptr: mlx_sys::mlx_vector_array_new(),
+                ptr: quill_mlx_sys::mlx_vector_array_new(),
                 init_success: false,
             }
         }
@@ -127,14 +127,14 @@ impl Drop for MaybeUninitVectorArray {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_vector_array_free(self.ptr);
+                quill_mlx_sys::mlx_vector_array_free(self.ptr);
             }
         }
     }
 }
 
 impl Guard<Vec<Array>> for MaybeUninitVectorArray {
-    type MutRawPtr = *mut mlx_sys::mlx_vector_array;
+    type MutRawPtr = *mut quill_mlx_sys::mlx_vector_array;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         &mut self.ptr
@@ -148,9 +148,9 @@ impl Guard<Vec<Array>> for MaybeUninitVectorArray {
         debug_assert!(self.init_success);
         self.init_success = false; // mlx_vector_array still needs to be freed after we extracted its elements
         unsafe {
-            let size = mlx_sys::mlx_vector_array_size(self.ptr);
+            let size = quill_mlx_sys::mlx_vector_array_size(self.ptr);
             (0..size)
-                .map(|i| Array::try_from_op(|res| mlx_sys::mlx_vector_array_get(res, self.ptr, i)))
+                .map(|i| Array::try_from_op(|res| quill_mlx_sys::mlx_vector_array_get(res, self.ptr, i)))
                 .collect()
         }
     }
@@ -161,7 +161,7 @@ impl Guarded for Vec<Array> {
 }
 
 impl Guard<VectorArray> for MaybeUninitVectorArray {
-    type MutRawPtr = *mut mlx_sys::mlx_vector_array;
+    type MutRawPtr = *mut quill_mlx_sys::mlx_vector_array;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         &mut self.ptr
@@ -233,8 +233,8 @@ impl Guarded for (Array, Array, Array) {
 
 impl Guard<(Vec<Array>, Vec<Array>)> for (MaybeUninitVectorArray, MaybeUninitVectorArray) {
     type MutRawPtr = (
-        *mut mlx_sys::mlx_vector_array,
-        *mut mlx_sys::mlx_vector_array,
+        *mut quill_mlx_sys::mlx_vector_array,
+        *mut quill_mlx_sys::mlx_vector_array,
     );
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
@@ -259,7 +259,7 @@ impl Guarded for (Vec<Array>, Vec<Array>) {
 }
 
 pub(crate) struct MaybeUninitDevice {
-    pub(crate) ptr: mlx_sys::mlx_device,
+    pub(crate) ptr: quill_mlx_sys::mlx_device,
     pub(crate) init_success: bool,
 }
 
@@ -273,7 +273,7 @@ impl MaybeUninitDevice {
     pub fn new() -> Self {
         unsafe {
             Self {
-                ptr: mlx_sys::mlx_device_new(),
+                ptr: quill_mlx_sys::mlx_device_new(),
                 init_success: false,
             }
         }
@@ -284,14 +284,14 @@ impl Drop for MaybeUninitDevice {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_device_free(self.ptr);
+                quill_mlx_sys::mlx_device_free(self.ptr);
             }
         }
     }
 }
 
 impl Guard<crate::Device> for MaybeUninitDevice {
-    type MutRawPtr = *mut mlx_sys::mlx_device;
+    type MutRawPtr = *mut quill_mlx_sys::mlx_device;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         &mut self.ptr
@@ -308,11 +308,11 @@ impl Guard<crate::Device> for MaybeUninitDevice {
 }
 
 impl Guarded for crate::DeviceType {
-    type Guard = mlx_sys::mlx_device_type;
+    type Guard = quill_mlx_sys::mlx_device_type;
 }
 
-impl Guard<crate::DeviceType> for mlx_sys::mlx_device_type {
-    type MutRawPtr = *mut mlx_sys::mlx_device_type;
+impl Guard<crate::DeviceType> for quill_mlx_sys::mlx_device_type {
+    type MutRawPtr = *mut quill_mlx_sys::mlx_device_type;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         self
@@ -322,8 +322,8 @@ impl Guard<crate::DeviceType> for mlx_sys::mlx_device_type {
 
     fn try_into_guarded(self) -> Result<crate::DeviceType, Exception> {
         match self {
-            mlx_sys::mlx_device_type__MLX_CPU => Ok(crate::DeviceType::Cpu),
-            mlx_sys::mlx_device_type__MLX_GPU => Ok(crate::DeviceType::Gpu),
+            quill_mlx_sys::mlx_device_type__MLX_CPU => Ok(crate::DeviceType::Cpu),
+            quill_mlx_sys::mlx_device_type__MLX_GPU => Ok(crate::DeviceType::Gpu),
             _ => Err(Exception {
                 what: "Unknown device type".to_string(),
                 location: std::panic::Location::caller(),
@@ -337,7 +337,7 @@ impl Guarded for crate::Device {
 }
 
 pub(crate) struct MaybeUninitStream {
-    pub(crate) ptr: mlx_sys::mlx_stream,
+    pub(crate) ptr: quill_mlx_sys::mlx_stream,
     pub(crate) init_success: bool,
 }
 
@@ -351,7 +351,7 @@ impl MaybeUninitStream {
     pub fn new() -> Self {
         unsafe {
             Self {
-                ptr: mlx_sys::mlx_stream_new(),
+                ptr: quill_mlx_sys::mlx_stream_new(),
                 init_success: false,
             }
         }
@@ -362,14 +362,14 @@ impl Drop for MaybeUninitStream {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_stream_free(self.ptr);
+                quill_mlx_sys::mlx_stream_free(self.ptr);
             }
         }
     }
 }
 
 impl Guard<crate::Stream> for MaybeUninitStream {
-    type MutRawPtr = *mut mlx_sys::mlx_stream;
+    type MutRawPtr = *mut quill_mlx_sys::mlx_stream;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         &mut self.ptr
@@ -390,8 +390,8 @@ impl Guarded for crate::Stream {
 }
 
 pub(crate) struct MaybeUninitSafeTensors {
-    pub(crate) c_data: mlx_sys::mlx_map_string_to_array,
-    pub(crate) c_metadata: mlx_sys::mlx_map_string_to_string,
+    pub(crate) c_data: quill_mlx_sys::mlx_map_string_to_array,
+    pub(crate) c_metadata: quill_mlx_sys::mlx_map_string_to_string,
     pub(crate) init_success: bool,
 }
 
@@ -405,8 +405,8 @@ impl MaybeUninitSafeTensors {
     pub fn new() -> Self {
         unsafe {
             Self {
-                c_metadata: mlx_sys::mlx_map_string_to_string_new(),
-                c_data: mlx_sys::mlx_map_string_to_array_new(),
+                c_metadata: quill_mlx_sys::mlx_map_string_to_string_new(),
+                c_data: quill_mlx_sys::mlx_map_string_to_array_new(),
                 init_success: false,
             }
         }
@@ -417,8 +417,8 @@ impl Drop for MaybeUninitSafeTensors {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_map_string_to_string_free(self.c_metadata);
-                mlx_sys::mlx_map_string_to_array_free(self.c_data);
+                quill_mlx_sys::mlx_map_string_to_string_free(self.c_metadata);
+                quill_mlx_sys::mlx_map_string_to_array_free(self.c_data);
             }
         }
     }
@@ -426,8 +426,8 @@ impl Drop for MaybeUninitSafeTensors {
 
 impl Guard<crate::utils::io::SafeTensors> for MaybeUninitSafeTensors {
     type MutRawPtr = (
-        *mut mlx_sys::mlx_map_string_to_array,
-        *mut mlx_sys::mlx_map_string_to_string,
+        *mut quill_mlx_sys::mlx_map_string_to_array,
+        *mut quill_mlx_sys::mlx_map_string_to_string,
     );
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
@@ -452,7 +452,7 @@ impl Guarded for crate::utils::io::SafeTensors {
 }
 
 pub(crate) struct MaybeUninitClosure {
-    pub(crate) ptr: mlx_sys::mlx_closure,
+    pub(crate) ptr: quill_mlx_sys::mlx_closure,
     pub(crate) init_success: bool,
 }
 
@@ -466,7 +466,7 @@ impl MaybeUninitClosure {
     pub fn new() -> Self {
         unsafe {
             Self {
-                ptr: mlx_sys::mlx_closure_new(),
+                ptr: quill_mlx_sys::mlx_closure_new(),
                 init_success: false,
             }
         }
@@ -477,14 +477,14 @@ impl Drop for MaybeUninitClosure {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_closure_free(self.ptr);
+                quill_mlx_sys::mlx_closure_free(self.ptr);
             }
         }
     }
 }
 
 impl<'a> Guard<crate::utils::Closure<'a>> for MaybeUninitClosure {
-    type MutRawPtr = *mut mlx_sys::mlx_closure;
+    type MutRawPtr = *mut quill_mlx_sys::mlx_closure;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         &mut self.ptr
@@ -508,7 +508,7 @@ impl Guarded for crate::utils::Closure<'_> {
 }
 
 pub(crate) struct MaybeUninitClosureValueAndGrad {
-    pub(crate) ptr: mlx_sys::mlx_closure_value_and_grad,
+    pub(crate) ptr: quill_mlx_sys::mlx_closure_value_and_grad,
     pub(crate) init_success: bool,
 }
 
@@ -522,7 +522,7 @@ impl MaybeUninitClosureValueAndGrad {
     pub fn new() -> Self {
         unsafe {
             Self {
-                ptr: mlx_sys::mlx_closure_value_and_grad_new(),
+                ptr: quill_mlx_sys::mlx_closure_value_and_grad_new(),
                 init_success: false,
             }
         }
@@ -533,14 +533,14 @@ impl Drop for MaybeUninitClosureValueAndGrad {
     fn drop(&mut self) {
         if !self.init_success {
             unsafe {
-                mlx_sys::mlx_closure_value_and_grad_free(self.ptr);
+                quill_mlx_sys::mlx_closure_value_and_grad_free(self.ptr);
             }
         }
     }
 }
 
 impl Guard<crate::transforms::ClosureValueAndGrad> for MaybeUninitClosureValueAndGrad {
-    type MutRawPtr = *mut mlx_sys::mlx_closure_value_and_grad;
+    type MutRawPtr = *mut quill_mlx_sys::mlx_closure_value_and_grad;
 
     fn as_mut_raw_ptr(&mut self) -> Self::MutRawPtr {
         &mut self.ptr

@@ -61,8 +61,8 @@ fn impl_quantizable_module_for_struct(
     let (extern_import, root) = match root {
         Some(root) => (quote::quote! {}, quote::quote! { #root }),
         None => (
-            quote::quote! { extern crate mlx_rs as _mlx_rs; },
-            quote::quote! { _mlx_rs },
+            quote::quote! { extern crate quill_mlx as _quill_mlx; },
+            quote::quote! { _quill_mlx },
         ),
     };
 

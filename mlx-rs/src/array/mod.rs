@@ -6,8 +6,8 @@ use crate::{
     Stream,
 };
 use element::FromSliceElement;
-use mlx_internal_macros::default_device;
-use mlx_sys::mlx_array;
+use quill_mlx_internal_macros::default_device;
+use quill_mlx_sys::mlx_array;
 use num_complex::Complex;
 use std::{
     ffi::{c_void, CStr},
@@ -48,15 +48,15 @@ impl std::fmt::Debug for Array {
 impl std::fmt::Display for Array {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         unsafe {
-            let mut mlx_str = mlx_sys::mlx_string_new();
-            let status = mlx_sys::mlx_array_tostring(&mut mlx_str as *mut _, self.as_ptr());
+            let mut mlx_str = quill_mlx_sys::mlx_string_new();
+            let status = quill_mlx_sys::mlx_array_tostring(&mut mlx_str as *mut _, self.as_ptr());
             if status != SUCCESS {
                 return Err(std::fmt::Error);
             }
-            let ptr = mlx_sys::mlx_string_data(mlx_str);
+            let ptr = quill_mlx_sys::mlx_string_data(mlx_str);
             let c_str = CStr::from_ptr(ptr);
             write!(f, "{}", c_str.to_str().map_err(|_| std::fmt::Error)?)?;
-            mlx_sys::mlx_string_free(mlx_str);
+            quill_mlx_sys::mlx_string_free(mlx_str);
             Ok(())
         }
     }
@@ -67,7 +67,7 @@ impl Drop for Array {
         // TODO: check memory leak with some tool?
 
         // Decrease the reference count
-        unsafe { mlx_sys::mlx_array_free(self.as_ptr()) };
+        unsafe { quill_mlx_sys::mlx_array_free(self.as_ptr()) };
     }
 }
 
@@ -92,7 +92,7 @@ impl Array {
     /// # Safety
     ///
     /// The caller must ensure the reference count of the array is properly incremented with
-    /// `mlx_sys::mlx_retain`.
+    /// `quill_mlx_sys::mlx_retain`.
     pub unsafe fn from_ptr(c_array: mlx_array) -> Array {
         Self { c_array }
     }
@@ -104,31 +104,31 @@ impl Array {
 
     /// New array from a bool scalar.
     pub fn from_bool(val: bool) -> Array {
-        let c_array = unsafe { mlx_sys::mlx_array_new_bool(val) };
+        let c_array = unsafe { quill_mlx_sys::mlx_array_new_bool(val) };
         Array { c_array }
     }
 
     /// New array from an int scalar.
     pub fn from_int(val: i32) -> Array {
-        let c_array = unsafe { mlx_sys::mlx_array_new_int(val) };
+        let c_array = unsafe { quill_mlx_sys::mlx_array_new_int(val) };
         Array { c_array }
     }
 
     /// New array from a f32 scalar.
     pub fn from_f32(val: f32) -> Array {
-        let c_array = unsafe { mlx_sys::mlx_array_new_float32(val) };
+        let c_array = unsafe { quill_mlx_sys::mlx_array_new_float32(val) };
         Array { c_array }
     }
 
     /// New array from a f64 scalar.
     pub fn from_f64(val: f64) -> Array {
-        let c_array = unsafe { mlx_sys::mlx_array_new_float64(val) };
+        let c_array = unsafe { quill_mlx_sys::mlx_array_new_float64(val) };
         Array { c_array }
     }
 
     /// New array from a complex scalar.
     pub fn from_complex(val: complex64) -> Array {
-        let c_array = unsafe { mlx_sys::mlx_array_new_complex(val.re, val.im) };
+        let c_array = unsafe { quill_mlx_sys::mlx_array_new_complex(val.re, val.im) };
         Array { c_array }
     }
 
@@ -181,7 +181,7 @@ impl Array {
             shape.len() as i32
         };
 
-        let c_array = mlx_sys::mlx_array_new_data(data, shape.as_ptr(), dim, dtype.into());
+        let c_array = quill_mlx_sys::mlx_array_new_data(data, shape.as_ptr(), dim, dtype.into());
         Array { c_array }
     }
 
@@ -200,7 +200,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     ///
     /// let data = vec![1i32, 2, 3, 4, 5];
     /// let mut array = Array::from_iter(data.clone(), &[5]);
@@ -225,12 +225,12 @@ impl Array {
 
     /// The size of the array’s datatype in bytes.
     pub fn item_size(&self) -> usize {
-        unsafe { mlx_sys::mlx_array_itemsize(self.as_ptr()) }
+        unsafe { quill_mlx_sys::mlx_array_itemsize(self.as_ptr()) }
     }
 
     /// Number of elements in the array.
     pub fn size(&self) -> usize {
-        unsafe { mlx_sys::mlx_array_size(self.as_ptr()) }
+        unsafe { quill_mlx_sys::mlx_array_size(self.as_ptr()) }
     }
 
     /// The strides of the array.
@@ -242,19 +242,19 @@ impl Array {
         }
 
         unsafe {
-            let data = mlx_sys::mlx_array_strides(self.as_ptr());
+            let data = quill_mlx_sys::mlx_array_strides(self.as_ptr());
             std::slice::from_raw_parts(data, ndim)
         }
     }
 
     /// The number of bytes in the array.
     pub fn nbytes(&self) -> usize {
-        unsafe { mlx_sys::mlx_array_nbytes(self.as_ptr()) }
+        unsafe { quill_mlx_sys::mlx_array_nbytes(self.as_ptr()) }
     }
 
     /// The array’s dimension.
     pub fn ndim(&self) -> usize {
-        unsafe { mlx_sys::mlx_array_ndim(self.as_ptr()) }
+        unsafe { quill_mlx_sys::mlx_array_ndim(self.as_ptr()) }
     }
 
     /// The shape of the array.
@@ -268,7 +268,7 @@ impl Array {
         }
 
         unsafe {
-            let data = mlx_sys::mlx_array_shape(self.as_ptr());
+            let data = quill_mlx_sys::mlx_array_shape(self.as_ptr());
             std::slice::from_raw_parts(data, ndim)
         }
     }
@@ -288,18 +288,18 @@ impl Array {
         };
 
         // This will panic on a scalar array
-        unsafe { mlx_sys::mlx_array_dim(self.as_ptr(), dim) }
+        unsafe { quill_mlx_sys::mlx_array_dim(self.as_ptr(), dim) }
     }
 
     /// The array element type.
     pub fn dtype(&self) -> Dtype {
-        let dtype = unsafe { mlx_sys::mlx_array_dtype(self.as_ptr()) };
+        let dtype = unsafe { quill_mlx_sys::mlx_array_dtype(self.as_ptr()) };
         Dtype::try_from(dtype).unwrap()
     }
 
     /// Evaluate the array.
     pub fn eval(&self) -> crate::error::Result<()> {
-        <() as Guarded>::try_from_op(|_| unsafe { mlx_sys::mlx_array_eval(self.as_ptr()) })
+        <() as Guarded>::try_from_op(|_| unsafe { quill_mlx_sys::mlx_array_eval(self.as_ptr()) })
     }
 
     /// Access the value of a scalar array.
@@ -324,7 +324,7 @@ impl Array {
         // return any non-success status code even if the dtype doesn't match.
         if self.dtype() != T::DTYPE {
             let new_array = Array::try_from_op(|res| unsafe {
-                mlx_sys::mlx_astype(
+                quill_mlx_sys::mlx_astype(
                     res,
                     self.as_ptr(),
                     T::DTYPE.into(),
@@ -348,7 +348,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     ///
     /// let data = [1i32, 2, 3, 4, 5];
     /// let mut array = Array::from_slice(&data[..], &[5]);
@@ -373,7 +373,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     ///
     /// let data = [1i32, 2, 3, 4, 5];
     /// let mut array = Array::from_slice(&data[..], &[5]);
@@ -412,7 +412,7 @@ impl Array {
     /// # Example
     ///
     /// ```rust
-    /// use mlx_rs::Array;
+    /// use quill_mlx::Array;
     ///
     /// let data = [1i32, 2, 3, 4, 5];
     /// let mut array = Array::from_slice(&data[..], &[5]);
@@ -432,26 +432,26 @@ impl Array {
             let dtype = self.dtype();
             let shape = self.shape();
             let data = match dtype {
-                Dtype::Bool => mlx_sys::mlx_array_data_bool(self.as_ptr()) as *const c_void,
-                Dtype::Uint8 => mlx_sys::mlx_array_data_uint8(self.as_ptr()) as *const c_void,
-                Dtype::Uint16 => mlx_sys::mlx_array_data_uint16(self.as_ptr()) as *const c_void,
-                Dtype::Uint32 => mlx_sys::mlx_array_data_uint32(self.as_ptr()) as *const c_void,
-                Dtype::Uint64 => mlx_sys::mlx_array_data_uint64(self.as_ptr()) as *const c_void,
-                Dtype::Int8 => mlx_sys::mlx_array_data_int8(self.as_ptr()) as *const c_void,
-                Dtype::Int16 => mlx_sys::mlx_array_data_int16(self.as_ptr()) as *const c_void,
-                Dtype::Int32 => mlx_sys::mlx_array_data_int32(self.as_ptr()) as *const c_void,
-                Dtype::Int64 => mlx_sys::mlx_array_data_int64(self.as_ptr()) as *const c_void,
-                Dtype::Float16 => mlx_sys::mlx_array_data_float16(self.as_ptr()) as *const c_void,
-                Dtype::Float32 => mlx_sys::mlx_array_data_float32(self.as_ptr()) as *const c_void,
-                Dtype::Float64 => mlx_sys::mlx_array_data_float64(self.as_ptr()) as *const c_void,
-                Dtype::Bfloat16 => mlx_sys::mlx_array_data_bfloat16(self.as_ptr()) as *const c_void,
+                Dtype::Bool => quill_mlx_sys::mlx_array_data_bool(self.as_ptr()) as *const c_void,
+                Dtype::Uint8 => quill_mlx_sys::mlx_array_data_uint8(self.as_ptr()) as *const c_void,
+                Dtype::Uint16 => quill_mlx_sys::mlx_array_data_uint16(self.as_ptr()) as *const c_void,
+                Dtype::Uint32 => quill_mlx_sys::mlx_array_data_uint32(self.as_ptr()) as *const c_void,
+                Dtype::Uint64 => quill_mlx_sys::mlx_array_data_uint64(self.as_ptr()) as *const c_void,
+                Dtype::Int8 => quill_mlx_sys::mlx_array_data_int8(self.as_ptr()) as *const c_void,
+                Dtype::Int16 => quill_mlx_sys::mlx_array_data_int16(self.as_ptr()) as *const c_void,
+                Dtype::Int32 => quill_mlx_sys::mlx_array_data_int32(self.as_ptr()) as *const c_void,
+                Dtype::Int64 => quill_mlx_sys::mlx_array_data_int64(self.as_ptr()) as *const c_void,
+                Dtype::Float16 => quill_mlx_sys::mlx_array_data_float16(self.as_ptr()) as *const c_void,
+                Dtype::Float32 => quill_mlx_sys::mlx_array_data_float32(self.as_ptr()) as *const c_void,
+                Dtype::Float64 => quill_mlx_sys::mlx_array_data_float64(self.as_ptr()) as *const c_void,
+                Dtype::Bfloat16 => quill_mlx_sys::mlx_array_data_bfloat16(self.as_ptr()) as *const c_void,
                 Dtype::Complex64 => {
-                    mlx_sys::mlx_array_data_complex64(self.as_ptr()) as *const c_void
+                    quill_mlx_sys::mlx_array_data_complex64(self.as_ptr()) as *const c_void
                 }
             };
 
             let new_c_array =
-                mlx_sys::mlx_array_new_data(data, shape.as_ptr(), shape.len() as i32, dtype.into());
+                quill_mlx_sys::mlx_array_new_data(data, shape.as_ptr(), shape.len() as i32, dtype.into());
 
             Array::from_ptr(new_c_array)
         }
@@ -460,7 +460,7 @@ impl Array {
 
 impl Clone for Array {
     fn clone(&self) -> Self {
-        Array::try_from_op(|res| unsafe { mlx_sys::mlx_array_set(res, self.as_ptr()) })
+        Array::try_from_op(|res| unsafe { quill_mlx_sys::mlx_array_set(res, self.as_ptr()) })
             // Exception may be thrown when calling `new` in cpp.
             .expect("Failed to clone array")
     }
@@ -482,7 +482,7 @@ pub fn stop_gradient_device(
     stream: impl AsRef<Stream>,
 ) -> crate::error::Result<Array> {
     Array::try_from_op(|res| unsafe {
-        mlx_sys::mlx_stop_gradient(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
+        quill_mlx_sys::mlx_stop_gradient(res, a.as_ref().as_ptr(), stream.as_ref().as_ptr())
     })
 }
 
